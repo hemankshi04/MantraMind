@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard — Mantra & Mind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080C12;--surf:#0F1520;--card:#141B27;--border:#1E2A3A;--gold:#F4C542;--text:#E8F0FE;--muted:#6B7A99;--green:#3EE07A;--blue:#4FC3F7;--purple:#B39DDB;--orange:#F0883E;--red:#EF5350}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(8,12,18,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem}
+.brand{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-style:italic}
+.nav-links{display:flex;gap:6px}
+.nl{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;transition:all .2s;border:1px solid transparent}
+.nl:hover,.nl.active{background:var(--card);border-color:var(--border);color:var(--text)}
+.nl.cta{background:var(--gold);color:#080C12;font-weight:600;border-color:var(--gold)}
+.nl.cta:hover{opacity:.85}
+.nav-user{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#E6A817);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#080C12}
+.main{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 4rem}
+.flash{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+.flash.success{background:rgba(62,224,122,.1);border:1px solid rgba(62,224,122,.3);color:var(--green)}
+.flash.error{background:rgba(239,83,80,.1);border:1px solid rgba(239,83,80,.3);color:var(--red)}
+.flash.info{background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);color:var(--blue)}
+.greeting{margin-bottom:2rem}
+.gt{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.gn{font-family:'Playfair Display',serif;font-size:28px;color:var(--text);margin-bottom:.2rem}
+.gn span{color:var(--gold)}
+.gs{font-size:13px;color:var(--muted)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+@media(max-width:700px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat.g::before{background:var(--green)}.stat.b::before{background:var(--blue)}.stat.p::before{background:var(--purple)}.stat.o::before{background:var(--orange)}
+.si{font-size:20px;margin-bottom:.5rem}
+.sv{font-size:26px;font-weight:300;color:var(--text);line-height:1}
+.sl{font-size:11px;color:var(--muted);margin-top:3px}
+.sbadge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:9px;font-weight:600;margin-top:5px}
+.badgeE{background:rgba(62,224,122,.15);color:var(--green)}.badgeG{background:rgba(79,195,247,.15);color:var(--blue)}.badgeF{background:rgba(240,136,62,.15);color:var(--orange)}.badgeN{background:rgba(239,83,80,.15);color:var(--red)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+@media(max-width:860px){.g2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.ct{font-size:14px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:8px}
+.ca{font-size:12px;color:var(--blue);text-decoration:none}
+.score-wrap{display:flex;align-items:center;gap:1.5rem}
+.ring-wrap{position:relative;width:110px;height:110px;flex-shrink:0}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:8}
+.ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.5s ease}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.rnum{font-size:24px;font-weight:300;color:var(--text);line-height:1}
+.rsub{font-size:9px;color:var(--muted);margin-top:2px}
+.score-cat{font-family:'Playfair Display',serif;font-size:18px;color:var(--text);margin-bottom:.5rem}
+.bbar{margin-bottom:7px}
+.bbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px}
+.bbt{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.bbf{height:100%;border-radius:2px;transition:width 1s ease}
+.aff-card{background:linear-gradient(135deg,rgba(244,197,66,.08),rgba(62,224,122,.05));border:1px solid rgba(244,197,66,.2);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden}
+.aff-tag{font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;font-weight:500}
+.aff-text{font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--text);line-height:1.5;margin-bottom:1rem}
+.aff-btn{background:none;border:1px solid rgba(244,197,66,.3);border-radius:8px;padding:6px 14px;color:var(--gold);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.aff-btn:hover{background:rgba(244,197,66,.08)}
+.chart-wrap{height:190px;position:relative}
+.no-data{display:flex;flex-direction:column;align-items:center;justify-content:center;height:160px;color:var(--muted);gap:.5rem;font-size:13px}
+.sug-section{margin-bottom:2rem}
+.st{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin-bottom:1.25rem}
+.sg{margin-bottom:1.5rem}
+.s-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:20px;padding:3px 12px;font-size:11px;color:var(--blue);margin-bottom:.85rem;font-weight:500}
+.sg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.sg-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;cursor:pointer;transition:transform .2s,border-color .2s;position:relative;overflow:hidden}
+.sg-card:hover{transform:translateY(-3px);border-color:#2E3D50}
+.sg-icon{font-size:26px;margin-bottom:.6rem}
+.sg-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:.3rem}
+.sg-desc{font-size:11px;color:var(--muted);line-height:1.4;margin-bottom:.85rem}
+.sg-btn{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:500;border:none;cursor:pointer;transition:opacity .2s;font-family:'DM Sans',sans-serif}
+.sg-btn:hover{opacity:.8}
+.empty{text-align:center;padding:3rem 1rem;background:var(--card);border:1px dashed var(--border);border-radius:16px}
+.empty .ei{font-size:42px;margin-bottom:.75rem}
+.empty h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--text);margin-bottom:.4rem}
+.empty p{font-size:13px;color:var(--muted);margin-bottom:1.2rem}
+.btn-cta{display:inline-block;padding:10px 22px;background:var(--gold);color:#080C12;border-radius:10px;text-decoration:none;font-weight:600;font-size:13px;transition:opacity .2s}
+.btn-cta:hover{opacity:.85}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">🌱 Mantra & Mind</div>
+  <div class="nav-links">
+    <a href="/dashboard" class="nl active">Dashboard</a>
+    <a href="/mantra" class="nl">Mantras</a>
+    <a href="/history" class="nl">History</a>
+    <a href="/checkin" class="nl cta">+ Check In</a>
+  </div>
+  <div class="nav-user">
+    <div class="avatar">{{ user.name[0].upper() }}</div>
+    {{ user.name.split()[0] }} &nbsp;·&nbsp;
+    <a href="/logout" class="nl" style="padding:4px 10px">Logout</a>
+  </div>
+</nav>
+<div class="main">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+  <div class="greeting">
+    <div class="gt" id="tg">Good morning</div>
+    <div class="gn">Welcome back, <span>{{ user.name.split()[0] }}</span> 🙏</div>
+    <div class="gs">{% if latest %}Last check-in: {{ latest.timestamp.strftime('%d %b %Y') }} · Score: {{ latest.wellness_score }}/100{% else %}Start your wellness journey with your first check-in today.{% endif %}</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat g"><div class="si">💚</div><div class="sv">{% if latest %}{{ latest.wellness_score }}{% else %}—{% endif %}</div><div class="sl">Wellness Score</div>{% if latest %}<span class="sbadge badge{{ latest.score_category[0].upper() }}">{{ latest.score_category.replace('-',' ').title() }}</span>{% endif %}</div>
+    <div class="stat b"><div class="si">📋</div><div class="sv">{{ total_checkins }}</div><div class="sl">Total Check-ins</div></div>
+    <div class="stat p"><div class="si">😴</div><div class="sv">{% if latest %}{{ latest.sleep_hours }}h{% else %}—{% endif %}</div><div class="sl">Last Sleep</div></div>
+    <div class="stat o"><div class="si">🌡️</div><div class="sv">{% if latest %}{{ latest.stress_level }}/10{% else %}—{% endif %}</div><div class="sl">Stress Level</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="ch"><div class="ct">📊 Wellness Score</div><a href="/checkin" class="ca">New Check-in →</a></div>
+      {% if latest %}
+      <div class="score-wrap">
+        <div class="ring-wrap">
+          <svg class="ring-svg" width="110" height="110" viewBox="0 0 110 110">
+            <circle class="ring-bg" cx="55" cy="55" r="46"/>
+            <circle class="ring-fill" id="ring" cx="55" cy="55" r="46"
+              stroke="{% if latest.score_category=='excellent' %}#3EE07A{% elif latest.score_category=='good' %}#4FC3F7{% elif latest.score_category=='fair' %}#F0883E{% else %}#EF5350{% endif %}"
+              stroke-dasharray="289" stroke-dashoffset="289"/>
+          </svg>
+          <div class="ring-center"><div class="rnum" id="rnum">0</div><div class="rsub">/ 100</div></div>
+        </div>
+        <div style="flex:1">
+          <div class="score-cat">{% if latest.score_category=='excellent' %}🌟 Excellent{% elif latest.score_category=='good' %}✅ Good{% elif latest.score_category=='fair' %}⚡ Fair{% else %}🌱 Needs Care{% endif %}</div>
+          <div class="bbar"><div class="bbl"><span>Sleep</span><span>{{ latest.sleep_hours }}h</span></div><div class="bbt"><div class="bbf" style="width:0%;background:#3EE07A" data-w="{{ [latest.sleep_hours/9*100,100]|min|round }}%"></div></div></div>
+          <div class="bbar"><div class="bbl"><span>Stress</span><span>{{ latest.stress_level }}/10</span></div><div class="bbt"><div class="bbf" style="width:0%;background:#EF5350" data-w="{{ ((10-latest.stress_level)/9*100)|round }}%"></div></div></div>
+          <div class="bbar"><div class="bbl"><span>Mood</span><span>{{ latest.mood.title() }}</span></div><div class="bbt"><div class="bbf" style="width:0%;background:#B39DDB" data-w="{% if latest.mood=='happy' %}100%{% elif latest.mood=='neutral' %}55%{% else %}20%{% endif %}"></div></div></div>
+        </div>
+      </div>
+      {% else %}
+      <div class="no-data"><div>📊</div><div>No data yet</div><a href="/checkin" class="btn-cta" style="margin-top:.5rem">Take First Check-in</a></div>
+      {% endif %}
+    </div>
+    <div class="aff-card">
+      <div class="aff-tag">✨ Daily Affirmation</div>
+      <div class="aff-text" id="at">{{ affirmation }}</div>
+      <button class="aff-btn" onclick="newAff()">↻ New Affirmation</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:2rem">
+    <div class="ch"><div class="ct">📈 Wellness Progress</div><a href="/history" class="ca">View All →</a></div>
+    {% if history|length > 1 %}
+    <div class="chart-wrap"><canvas id="pc"></canvas></div>
+    {% else %}
+    <div class="no-data"><div>📈</div>Complete at least 2 check-ins to see progress chart</div>
+    {% endif %}
+  </div>
+  <div style="text-align:center;margin-bottom:2rem">
+    <a href="/mantra" class="btn-cta" style="font-size:15px;padding:12px 28px">🧘 Get Mantra Suggestion →</a>
+  </div>
+</div>
+<script>
+const h=new Date().getHours();
+document.getElementById('tg').textContent=h<12?'Good morning ☀️':h<17?'Good afternoon 🌤️':'Good evening 🌙';
+{% if latest %}
+const sc={{ latest.wellness_score }};
+const ring=document.getElementById('ring'),rnum=document.getElementById('rnum');
+setTimeout(()=>{ring.style.strokeDashoffset=289*(1-sc/100);},300);
+let cur=0;const iv=setInterval(()=>{cur=Math.min(cur+2,sc);rnum.textContent=Math.round(cur);if(cur>=sc)clearInterval(iv);},18);
+document.querySelectorAll('.bbf').forEach(el=>{setTimeout(()=>{el.style.width=el.getAttribute('data-w');},500);});
+{% endif %}
+{% if history|length > 1 %}
+new Chart(document.getElementById('pc').getContext('2d'),{type:'line',data:{labels:{{ chart_labels|safe }},datasets:[{label:'Wellness',data:{{ chart_scores|safe }},borderColor:'#F4C542',backgroundColor:'rgba(244,197,66,.08)',borderWidth:2,fill:true,tension:0.4,pointRadius:4,pointBackgroundColor:'#F4C542',pointBorderColor:'#080C12',pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:800},scales:{x:{ticks:{color:'#6B7A99',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},y:{min:0,max:100,ticks:{color:'#6B7A99',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}}},plugins:{legend:{display:false}}}});
+{% endif %}
+async function newAff(){
+  try{const r=await fetch('/api/affirmation');const d=await r.json();
+  const el=document.getElementById('at');el.style.opacity='0';
+  setTimeout(()=>{el.textContent=d.affirmation;el.style.opacity='1';},250);el.style.transition='opacity .25s';}catch(e){}
+}
+</script>
+</body>
+</html>

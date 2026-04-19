@@ -1,0 +1,99 @@
+============================================================
+  MENTAL HEALTH ANALYSIS — HOW TO RUN
+  GAN + Research Dataset Integration
+============================================================
+
+FOLDER STRUCTURE:
+  mental_health_analysis/
+  ├── train_enhanced_model.py   ← STEP 2: Train all models
+  ├── app.py                    ← STEP 3: Run web app
+  ├── requirements.txt          ← STEP 1: Install dependencies
+  ├── dataset/
+  │   ├── mantra_dataset.csv              (original, 200 rows)
+  │   ├── gan_mantra_dataset.csv          (GAN-generated, 200 rows)
+  │   ├── research_dataset_original.csv   (research paper, 200 rows)
+  │   └── research_dataset_generated.csv  (research-generated, 200 rows)
+  ├── model/
+  │   ├── best_model.pkl         (pre-trained — overwritten by train script)
+  │   ├── le_mantra.pkl
+  │   ├── le_gender.pkl
+  │   ├── le_exp.pkl
+  │   ├── le_target.pkl
+  │   └── feature_names.pkl
+  ├── outputs/                   (charts generated after training)
+  ├── templates/                 (Flask HTML templates)
+  └── scripts/                   (original dataset generator scripts)
+
+============================================================
+  STEP 1: INSTALL DEPENDENCIES
+============================================================
+
+  pip install -r requirements.txt
+
+  If you're using a virtual environment (recommended):
+    python -m venv venv
+    venv\Scripts\activate       (Windows)
+    source venv/bin/activate    (Mac/Linux)
+    pip install -r requirements.txt
+
+============================================================
+  STEP 2: TRAIN THE ENHANCED MODEL
+============================================================
+
+  python train_enhanced_model.py
+
+  This will:
+  ✓ Load all 4 datasets (800 rows total)
+  ✓ Engineer 9 derived features
+  ✓ Train 6 models × 5 dataset combinations = 30 experiments
+  ✓ Select the best model by cross-validation accuracy
+  ✓ Save best_model.pkl to model/
+  ✓ Generate 7 analysis charts in outputs/
+  ✓ Print full classification report
+
+  Expected runtime: 2–5 minutes depending on your machine.
+
+============================================================
+  STEP 3: RUN THE WEB APPLICATION
+============================================================
+
+  python app.py
+
+  Then open your browser to:
+    http://localhost:5000
+
+  Features:
+  • User signup / login
+  • Mental wellness check-in form
+  • ML-powered mantra recommendation
+  • Session history and dashboard
+  • Mantra audio player
+
+============================================================
+  OUTPUT CHARTS (in outputs/ after training)
+============================================================
+
+  fig1_accuracy_heatmap.png     — CV accuracy for all 30 experiments
+  fig2_grouped_bar.png          — Test accuracy grouped by model
+  fig3_best_model_analysis.png  — Confusion matrix + precision/recall/F1
+  fig4_gan_contribution.png     — How GAN data affects each model's metrics
+  fig5_feature_importance.png   — Top 15 most predictive features
+  fig6_data_distributions.png   — Feature distribution across datasets
+  fig7_dashboard.png            — Executive summary dashboard
+
+============================================================
+  NOTES
+============================================================
+
+  • The model/ folder already contains pre-trained artifacts so
+    you can skip Step 2 and jump straight to app.py if you just
+    want to try the web app.
+
+  • Running train_enhanced_model.py will overwrite best_model.pkl
+    with the newly trained best model.
+
+  • Python 3.8+ required.
+  • PyTorch is only needed if you want to use the GAN generator
+    scripts in the scripts/ folder.
+
+============================================================

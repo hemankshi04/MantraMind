@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sign Up — Mantra & Mind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080C12;--card:#141B27;--border:#1E2A3A;--gold:#F4C542;--text:#E8F0FE;--muted:#6B7A99;--green:#3EE07A;--red:#EF5350}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(244,197,66,.06),transparent 55%);pointer-events:none}
+.box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:440px;position:relative;z-index:1;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);font-style:italic;text-align:center;margin-bottom:2rem}
+h1{font-family:'Playfair Display',serif;font-size:26px;color:var(--text);margin-bottom:.3rem}
+p{font-size:13px;color:var(--muted);margin-bottom:2rem}
+.flash{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:1rem}
+.flash.error{background:rgba(239,83,80,.12);border:1px solid rgba(239,83,80,.3);color:var(--red)}
+.flash.success{background:rgba(62,224,122,.12);border:1px solid rgba(62,224,122,.3);color:var(--green)}
+.field{margin-bottom:1.1rem}
+label{display:block;font-size:11px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px}
+input{width:100%;padding:11px 14px;background:#0F1520;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);transition:border-color .2s}
+input:focus{outline:none;border-color:var(--gold)}
+input::placeholder{color:#3A4560}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{width:100%;padding:13px;background:var(--gold);color:#080C12;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .2s;margin-top:.5rem}
+.btn:hover{opacity:.85}
+.link{text-align:center;font-size:13px;color:var(--muted);margin-top:1.2rem}
+.link a{color:var(--gold);text-decoration:none;font-weight:500}
+.bar{height:3px;border-radius:2px;background:#1E2A3A;margin-top:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;width:0;transition:width .3s,background .3s}
+.bar-lbl{font-size:10px;color:var(--muted);margin-top:3px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">🌱 Mantra & Mind</div>
+  <h1>Create account</h1>
+  <p>Start your free wellness journey today</p>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  <form method="POST">
+    <div class="field"><label>Full Name</label><input type="text" name="name" placeholder="Your name" required></div>
+    <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@email.com" required></div>
+    <div class="row2">
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" id="pwd" placeholder="Min 6 chars" required oninput="strength(this.value)">
+        <div class="bar"><div class="bar-fill" id="bar"></div></div>
+        <div class="bar-lbl" id="barLbl">Enter password</div>
+      </div>
+      <div class="field"><label>Confirm</label><input type="password" name="confirm_password" placeholder="Repeat" required></div>
+    </div>
+    <button type="submit" class="btn">Create Account →</button>
+  </form>
+  <div class="link">Have account? <a href="/login">Sign in</a></div>
+</div>
+<script>
+function strength(v){
+  const b=document.getElementById('bar'),l=document.getElementById('barLbl');
+  let s=0;
+  if(v.length>=6)s++;if(v.length>=10)s++;if(/[A-Z]/.test(v))s++;if(/[0-9]/.test(v))s++;
+  const lv=[{w:'0%',c:'#EF5350',t:'Too short'},{w:'30%',c:'#EF5350',t:'Weak'},
+            {w:'55%',c:'#F4C542',t:'Fair'},{w:'80%',c:'#3EE07A',t:'Good'},{w:'100%',c:'#3EE07A',t:'Strong ✓'}];
+  const x=lv[Math.min(s,4)];b.style.width=x.w;b.style.background=x.c;l.textContent=x.t;
+}
+</script>
+</body>
+</html>

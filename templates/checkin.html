@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Check-in — Mantra & Mind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080C12;--card:#141B27;--surf:#0F1520;--border:#1E2A3A;--gold:#F4C542;--text:#E8F0FE;--muted:#6B7A99;--green:#3EE07A;--purple:#B39DDB;--orange:#F0883E;--red:#EF5350;--blue:#4FC3F7}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(8,12,18,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem}
+.brand{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-style:italic}
+.nl{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;border:1px solid transparent;transition:all .2s}
+.nl:hover{background:var(--card);border-color:var(--border);color:var(--text)}
+.main{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem}
+.ph{text-align:center;margin-bottom:2.5rem}
+.ph h1{font-family:'Playfair Display',serif;font-size:28px;color:var(--text);margin-bottom:.3rem}
+.ph p{font-size:13px;color:var(--muted)}
+.steps-ind{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2.5rem}
+.sd{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;border:2px solid var(--border);color:var(--muted);background:var(--card);transition:all .3s;flex-shrink:0}
+.sd.active{border-color:var(--gold);color:var(--gold);background:rgba(244,197,66,.08)}
+.sd.done{border-color:var(--gold);color:#080C12;background:var(--gold)}
+.sl{height:2px;width:50px;background:var(--border);transition:background .3s}
+.sl.done{background:var(--gold)}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;display:none;animation:fi .4s ease}
+.sec.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slbl{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin-bottom:.3rem}
+.ssub{font-size:12px;color:var(--muted);margin-bottom:1.25rem}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem}
+.si{position:relative}.si input[type=checkbox]{position:absolute;opacity:0;width:0;height:0}
+.slabel{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--surf);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--muted)}
+.slabel:hover{border-color:#2E3D50;color:var(--text)}
+.si input:checked+.slabel{border-color:var(--gold);color:var(--text);background:rgba(244,197,66,.06)}
+.slabel .ic{font-size:18px}
+.rg{margin-bottom:1.4rem}
+.rh{display:flex;justify-content:space-between;margin-bottom:.4rem}
+.rh label{font-size:12px;color:var(--muted);font-weight:500}
+.rv{font-size:16px;font-weight:500;color:var(--gold)}
+input[type=range]{width:100%;cursor:pointer;accent-color:var(--gold)}
+.mg{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.mi{position:relative}.mi input{position:absolute;opacity:0;width:0;height:0}
+.ml{display:flex;flex-direction:column;align-items:center;gap:5px;padding:.9rem;background:var(--surf);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;text-align:center}
+.ml .mj{font-size:28px}.ml .mn{font-size:12px;color:var(--muted)}
+.ml:hover{border-color:#2E3D50}
+.mi input:checked+.ml{border-color:var(--purple);background:rgba(179,157,219,.08)}
+.mi input:checked+.ml .mn{color:var(--purple)}
+.eg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.75rem}
+.ei{position:relative}.ei input{position:absolute;opacity:0;width:0;height:0}
+.el{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px;background:var(--surf);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:11px;color:var(--muted);transition:all .2s;text-align:center}
+.el .ei-ic{font-size:20px}
+.ei input:checked+.el{border-color:var(--blue);color:var(--blue);background:rgba(79,195,247,.08)}
+.br{display:flex;gap:1rem;margin-top:1.5rem}
+.bb{flex:1;padding:11px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.bb:hover{border-color:#2E3D50;color:var(--text)}
+.bn{flex:2;padding:11px;background:var(--gold);border:none;border-radius:10px;color:#080C12;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.bn:hover{opacity:.85}
+.bs{flex:2;padding:11px;background:var(--purple);border:none;border-radius:10px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s}
+.bs:hover{opacity:.85}
+.slp{display:flex;align-items:center;gap:12px;margin-top:.4rem}
+.spb{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surf);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.spb:hover{border-color:var(--gold);color:var(--gold)}
+.spd{font-size:26px;font-weight:300;color:var(--text);min-width:65px;text-align:center}
+.spd span{font-size:13px;color:var(--muted);font-weight:400}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">🌱 Mantra & Mind</div>
+  <div><a href="/dashboard" class="nl">← Dashboard</a></div>
+</nav>
+<div class="main">
+  <div class="ph">
+    <h1>Wellness Check-in</h1>
+    <p>5-step assessment to calculate your Mental Health Score</p>
+  </div>
+  <div class="steps-ind">
+    <div class="sd active" id="d1">1</div><div class="sl" id="l1"></div>
+    <div class="sd" id="d2">2</div><div class="sl" id="l2"></div>
+    <div class="sd" id="d3">3</div><div class="sl" id="l3"></div>
+    <div class="sd" id="d4">4</div><div class="sl" id="l4"></div>
+    <div class="sd" id="d5">5</div>
+  </div>
+  <form method="POST" action="/checkin">
+    <div class="sec active" id="s1">
+      <div class="slbl">What are you struggling with?</div>
+      <div class="ssub">Select all that apply</div>
+      <div class="sg">
+        <div class="si"><input type="checkbox" name="struggles" value="insomnia" id="si"><label class="slabel" for="si"><span class="ic">🌙</span>Insomnia</label></div>
+        <div class="si"><input type="checkbox" name="struggles" value="stress" id="ss"><label class="slabel" for="ss"><span class="ic">😤</span>Stress</label></div>
+        <div class="si"><input type="checkbox" name="struggles" value="anxiety" id="sa"><label class="slabel" for="sa"><span class="ic">😰</span>Anxiety</label></div>
+        <div class="si"><input type="checkbox" name="struggles" value="lack_of_focus" id="sf"><label class="slabel" for="sf"><span class="ic">🧠</span>Lack of Focus</label></div>
+        <div class="si"><input type="checkbox" name="struggles" value="physical_fitness" id="sp"><label class="slabel" for="sp"><span class="ic">💪</span>Physical Fitness</label></div>
+      </div>
+      <div class="br" style="justify-content:flex-end"><button type="button" class="bn" onclick="goS(2)">Next → Sleep</button></div>
+    </div>
+    <div class="sec" id="s2">
+      <div class="slbl">😴 How many hours did you sleep?</div>
+      <div class="ssub">7–9 hours is optimal</div>
+      <div class="slp">
+        <button type="button" class="spb" onclick="chgSlp(-.5)">−</button>
+        <div class="spd" id="sd">7.0<span> hrs</span></div>
+        <button type="button" class="spb" onclick="chgSlp(.5)">+</button>
+      </div>
+      <input type="hidden" name="sleep_hours" id="sh" value="7.0">
+      <div style="margin-top:1.2rem"><input type="range" min="2" max="12" step="0.5" value="7" oninput="setSh(this.value)"></div>
+      <div class="br"><button type="button" class="bb" onclick="goS(1)">← Back</button><button type="button" class="bn" onclick="goS(3)">Next → Stress</button></div>
+    </div>
+    <div class="sec" id="s3">
+      <div class="slbl">🌡️ Your stress level today?</div>
+      <div class="ssub">1 = Calm, 10 = Very stressed</div>
+      <div class="rg">
+        <div class="rh"><label>Stress Level</label><div class="rv" id="sv">5</div></div>
+        <input type="range" name="stress_level" min="1" max="10" value="5" oninput="document.getElementById('sv').textContent=this.value">
+      </div>
+      <div class="br"><button type="button" class="bb" onclick="goS(2)">← Back</button><button type="button" class="bn" onclick="goS(4)">Next → Exercise</button></div>
+    </div>
+    <div class="sec" id="s4">
+      <div class="slbl">💪 How often do you exercise?</div>
+      <div class="ssub">Physical activity affects mental health directly</div>
+      <div class="eg">
+        <div class="ei"><input type="radio" name="exercise_freq" value="daily" id="ed"><label class="el" for="ed"><span class="ei-ic">🔥</span>Daily</label></div>
+        <div class="ei"><input type="radio" name="exercise_freq" value="3-4" id="e34" checked><label class="el" for="e34"><span class="ei-ic">💪</span>3–4×/wk</label></div>
+        <div class="ei"><input type="radio" name="exercise_freq" value="1-2" id="e12"><label class="el" for="e12"><span class="ei-ic">🚶</span>1–2×/wk</label></div>
+        <div class="ei"><input type="radio" name="exercise_freq" value="rarely" id="er"><label class="el" for="er"><span class="ei-ic">🪑</span>Rarely</label></div>
+        <div class="ei"><input type="radio" name="exercise_freq" value="never" id="en"><label class="el" for="en"><span class="ei-ic">😴</span>Never</label></div>
+      </div>
+      <div class="br"><button type="button" class="bb" onclick="goS(3)">← Back</button><button type="button" class="bn" onclick="goS(5)">Next → Mood</button></div>
+    </div>
+    <div class="sec" id="s5">
+      <div class="slbl">😊 How is your mood today?</div>
+      <div class="ssub">Be honest — this is for you</div>
+      <div class="mg">
+        <div class="mi"><input type="radio" name="mood" value="happy" id="mh"><label class="ml" for="mh"><span class="mj">😊</span><span class="mn">Happy</span></label></div>
+        <div class="mi"><input type="radio" name="mood" value="neutral" id="mn" checked><label class="ml" for="mn"><span class="mj">😐</span><span class="mn">Neutral</span></label></div>
+        <div class="mi"><input type="radio" name="mood" value="sad" id="ms"><label class="ml" for="ms"><span class="mj">😔</span><span class="mn">Sad</span></label></div>
+      </div>
+      <div class="br"><button type="button" class="bb" onclick="goS(4)">← Back</button><button type="submit" class="bs">✨ Calculate My Score</button></div>
+    </div>
+  </form>
+</div>
+<script>
+let cs=1,sv=7.0;
+function goS(n){
+  document.getElementById('s'+cs).classList.remove('active');
+  document.getElementById('d'+cs).classList.remove('active');
+  document.getElementById('d'+cs).classList.add('done');
+  if(cs<5)document.getElementById('l'+cs).classList.add('done');
+  cs=n;
+  document.getElementById('s'+n).classList.add('active');
+  document.getElementById('d'+n).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setSh(v){sv=parseFloat(v);document.getElementById('sd').innerHTML=sv.toFixed(1)+'<span> hrs</span>';document.getElementById('sh').value=sv;}
+function chgSlp(d){sv=Math.min(12,Math.max(2,sv+d));document.getElementById('sd').innerHTML=sv.toFixed(1)+'<span> hrs</span>';document.getElementById('sh').value=sv;}
+</script>
+</body>
+</html>

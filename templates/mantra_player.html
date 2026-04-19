@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mantra Player — Mantra & Mind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080C12;--surf:#0F1520;--card:#141B27;--border:#1E2A3A;--gold:#F4C542;--gold2:#E6A817;--glow:rgba(244,197,66,.18);--text:#E8F0FE;--muted:#6B7A99;--green:#3EE07A;--blue:#4FC3F7;--purple:#B39DDB;--orange:#FF8C42;--red:#EF5350}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(244,197,66,.06),transparent 60%);pointer-events:none;z-index:0}
+nav{position:sticky;top:0;z-index:300;background:rgba(8,12,18,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:.85rem 2rem}
+.brand{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-style:italic}
+.nl{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;border:1px solid transparent;transition:all .2s}
+.nl:hover{background:var(--card);border-color:var(--border);color:var(--text)}
+.page{max-width:1050px;margin:0 auto;padding:2rem 1.5rem 4rem;position:relative;z-index:1}
+.gs{display:flex;align-items:center;gap:1rem;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.5rem;margin-bottom:2rem}
+.gi{font-size:34px}
+.gt h1{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin-bottom:2px}
+.gt p{font-size:12px;color:var(--muted)}
+.gbadge{margin-left:auto;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(244,197,66,.1);border:1px solid rgba(244,197,66,.25);color:var(--gold)}
+.layout{display:grid;grid-template-columns:1fr 360px;gap:1.5rem;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.ml{display:flex;flex-direction:column;gap:1rem}
+.mc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .25s}
+.mc:hover{border-color:#2E3D50;transform:translateX(3px)}
+.mc.active{border-color:var(--gold);background:linear-gradient(135deg,rgba(244,197,66,.06),var(--card))}
+.mc.active::before{background:var(--gold)}
+.mctop{display:flex;align-items:center;gap:12px;margin-bottom:.65rem}
+.mcsym{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--border)}
+.mcname{font-family:'Playfair Display',serif;font-size:16px;color:var(--text)}
+.mctrad{font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.mctag{margin-left:auto;padding:2px 9px;border-radius:12px;font-size:10px;font-weight:500}
+.mcdesc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:.65rem}
+.mcstats{display:flex;gap:.85rem}
+.mcs{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.mcs span{color:var(--text);font-weight:500}
+.playing{display:none;align-items:center;gap:5px;font-size:11px;color:var(--green);margin-top:.4rem}
+.playing.show{display:flex}
+.bars{display:flex;align-items:flex-end;gap:2px;height:12px}
+.bars span{width:3px;background:var(--green);border-radius:2px;animation:bp 1s ease-in-out infinite}
+.bars span:nth-child(1){height:5px;animation-delay:0s}
+.bars span:nth-child(2){height:10px;animation-delay:.15s}
+.bars span:nth-child(3){height:12px;animation-delay:.3s}
+.bars span:nth-child(4){height:10px;animation-delay:.45s}
+.bars span:nth-child(5){height:5px;animation-delay:.6s}
+@keyframes bp{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+.pp{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.75rem 1.5rem;position:sticky;top:80px}
+.ppname{font-family:'Playfair Display',serif;font-size:24px;color:var(--text);text-align:center;margin-bottom:.2rem}
+.pptrad{font-size:11px;color:var(--muted);text-align:center;letter-spacing:.05em;text-transform:uppercase;margin-bottom:1.5rem}
+.tw{position:relative;width:170px;height:170px;margin:0 auto 1.5rem}
+.tsvg{transform:rotate(-90deg)}
+.tbg{fill:none;stroke:var(--border);stroke-width:6}
+.tfill{fill:none;stroke:#F4C542;stroke-width:6;stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+.tc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.tt{font-size:28px;font-weight:300;color:var(--text);line-height:1}
+.tl{font-size:9px;color:var(--muted);letter-spacing:.06em;margin-top:3px}
+.dr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.dl{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.dps{display:flex;gap:5px}
+.dp{padding:4px 10px;border-radius:16px;font-size:11px;font-weight:500;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.dp:hover{border-color:#2E3D50;color:var(--text)}
+.dp.active{border-color:var(--gold);color:var(--gold);background:rgba(244,197,66,.08)}
+.cs{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:.9rem;margin-bottom:1.1rem;text-align:center}
+.cl{font-size:9px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.cd{display:flex;align-items:center;justify-content:center;gap:.65rem;margin-bottom:.5rem}
+.cn{font-size:36px;font-weight:300;color:var(--gold);line-height:1}
+.cof{font-size:12px;color:var(--muted);align-self:flex-end;padding-bottom:3px}
+.cp{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:.4rem}
+.cpf{height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:2px;transition:width .3s ease}
+.cbeads{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin-top:.4rem}
+.bead{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s,transform .15s}
+.bead.done{background:var(--gold)}
+.bead.cur{background:var(--gold);transform:scale(1.5);box-shadow:0 0 5px var(--glow)}
+.ctrl{display:flex;align-items:center;justify-content:center;gap:.65rem;margin-bottom:1rem}
+.cb{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.cb:hover{border-color:#2E3D50;color:var(--text);background:var(--card)}
+.cb.on{border-color:var(--gold);color:var(--gold);background:rgba(244,197,66,.08)}
+.pb{width:62px;height:62px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#080C12;font-size:24px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px var(--glow)}
+.pb:hover{transform:scale(1.06);box-shadow:0 6px 26px rgba(244,197,66,.3)}
+.pb:active{transform:scale(.96)}
+.pb.disabled,.cb.disabled{opacity:.35;cursor:not-allowed;border-color:var(--border);color:var(--muted);background:var(--surf)}
+.pb.playing{background:linear-gradient(135deg,var(--red),#C62828)}
+.srow{display:flex;align-items:center;justify-content:space-between;background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:.65rem .9rem;margin-bottom:.85rem}
+.sl{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.st{width:38px;height:22px;border-radius:11px;background:var(--border);position:relative;cursor:pointer;transition:background .2s;border:none;flex-shrink:0}
+.st.on{background:var(--green)}
+.st::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .2s}
+.st.on::after{transform:translateX(16px)}
+.vslid{width:70px;cursor:pointer;accent-color:var(--green)}
+.fr{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);padding:.4rem 0;border-top:1px solid var(--border);margin-top:.4rem}
+.fv{color:var(--gold);font-weight:500}
+.lyric-box{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:1rem 0;line-height:1.6}
+.lyric-box .cl{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.lyric{font-size:13px;color:var(--text);white-space:pre-wrap;max-height:140px;overflow:auto}
+.bts{display:flex;flex-wrap:wrap;gap:5px;margin-top:.65rem}
+.bt{padding:2px 9px;border-radius:12px;font-size:10px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);color:var(--blue)}
+.cov{position:fixed;inset:0;background:rgba(8,12,18,.96);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:2rem}
+.cov.show{display:flex}
+.coico{font-size:64px;margin-bottom:1.25rem;animation:bou .6s ease}
+@keyframes bou{0%{transform:scale(0)}60%{transform:scale(1.1)}100%{transform:scale(1)}}
+.coti{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);margin-bottom:.4rem}
+.cosu{font-size:14px;color:var(--muted);margin-bottom:.6rem}
+.cocnt{font-size:44px;font-weight:300;color:var(--text);margin-bottom:.4rem}
+.costs{display:flex;gap:2rem;justify-content:center;margin:1.25rem 0}
+.cst{text-align:center}
+.csv{font-size:24px;font-weight:300;color:var(--green)}
+.csl{font-size:10px;color:var(--muted);margin-top:2px}
+.cobts{display:flex;gap:.85rem;margin-top:1rem;flex-wrap:wrap;justify-content:center}
+.coag{padding:11px 24px;background:var(--gold);color:#080C12;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s}
+.coag:hover{opacity:.85}
+.cohm{padding:11px 24px;background:none;border:1px solid var(--border);color:var(--muted);border-radius:10px;font-size:14px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+.cohm:hover{border-color:#2E3D50;color:var(--text)}
+.toast{position:fixed;bottom:2rem;right:2rem;z-index:400;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.75rem 1.1rem;font-size:13px;color:var(--text);display:flex;align-items:center;gap:7px;transform:translateY(120%);transition:transform .3s ease;box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.toast.show{transform:none}
+
+/* ── Prediction Panel ─── */
+.pred-panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;margin-top:1.5rem}
+.pred-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.pred-header h3{font-family:'Playfair Display',serif;font-size:15px;color:var(--text);margin:0}
+.pred-form{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem}
+@media(max-width:600px){.pred-form{grid-template-columns:1fr}}
+.pred-field{display:flex;flex-direction:column;gap:4px}
+.pred-field label{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.pred-field input,.pred-field select{background:var(--surf);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border .2s}
+.pred-field input:focus,.pred-field select:focus{border-color:var(--gold)}
+.pred-field select option{background:var(--card)}
+.pred-btn{width:100%;padding:10px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#080C12;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s;margin-top:.25rem}
+.pred-btn:hover{opacity:.85}
+.pred-result{display:none;margin-top:1rem;padding:1rem;background:var(--surf);border:1px solid var(--border);border-radius:12px}
+.pred-result.show{display:block}
+.pred-model-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:.75rem;letter-spacing:.04em}
+.pred-model-badge.dl{background:rgba(79,195,247,.12);border:1px solid rgba(79,195,247,.3);color:#4FC3F7}
+.pred-model-badge.ml{background:rgba(62,224,122,.12);border:1px solid rgba(62,224,122,.3);color:#3EE07A}
+.pred-model-badge.fallback{background:rgba(255,140,66,.12);border:1px solid rgba(255,140,66,.3);color:#FF8C42}
+.pred-eff{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:.5rem}
+.pred-eff .eff-high{color:#3EE07A}.pred-eff .eff-medium{color:#F4C542}.pred-eff .eff-low{color:#EF5350}
+.pred-probs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+.pred-prob-item{flex:1;min-width:80px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem;text-align:center}
+.pred-prob-item .pp-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.pred-prob-item .pp-val{font-size:16px;font-weight:300;color:var(--text)}
+.pred-metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem}
+.pred-metric{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;display:flex;justify-content:space-between;align-items:center}
+.pred-metric .pm-label{font-size:10px;color:var(--muted)}
+.pred-metric .pm-val{font-size:13px;color:var(--green);font-weight:500}
+/* ── Model Comparison ─── */
+.cmp-section{margin-top:2rem;padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:16px}
+.cmp-section h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--text);margin-bottom:1rem}
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px}
+.cmp-table th{text-align:left;padding:.5rem .75rem;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.cmp-table td{padding:.6rem .75rem;border-bottom:1px solid rgba(30,42,58,.5);color:var(--text)}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr.winner td{background:rgba(62,224,122,.04)}
+.cmp-bar-wrap{width:100px;height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle}
+.cmp-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.cmp-type-badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.cmp-type-badge.dl{background:rgba(79,195,247,.12);color:#4FC3F7;border:1px solid rgba(79,195,247,.25)}
+.cmp-type-badge.ml{background:rgba(62,224,122,.12);color:#3EE07A;border:1px solid rgba(62,224,122,.25)}
+.cmp-winner-badge{margin-left:6px;padding:1px 6px;border-radius:8px;font-size:9px;background:rgba(62,224,122,.15);color:#3EE07A;border:1px solid rgba(62,224,122,.3)}
+
+
+</style>
+</head>
+<body>
+<nav>
+  <a href="javascript:history.back()" class="nl">← Back</a>
+  <div class="brand">🌱 Mantra &amp; Mind</div>
+  <div class="nl" id="navlbl" style="color:var(--gold)">Mantra Player</div>
+</nav>
+<div class="cov" id="cov">
+  <div class="coico">🙏</div>
+  <div class="coti">Session Complete!</div>
+  <div class="cosu" id="coname">Om Chanting</div>
+  <div class="cocnt" id="cofin" style="color:var(--gold);font-size:52px">0</div>
+  <div style="font-size:13px;color:var(--muted)">chants completed</div>
+  <div class="costs">
+    <div class="cst"><div class="csv" id="codur">15 min</div><div class="csl">Duration</div></div>
+    <div class="cst"><div class="csv" id="cofreq">136.1 Hz</div><div class="csl">Frequency</div></div>
+    <div class="cst"><div class="csv">−22%</div><div class="csl">Est. Cortisol</div></div>
+  </div>
+  <div class="cobts">
+    <button class="coag" onclick="restartSess()">🔄 Start Again</button>
+    <a href="/mantra" class="cohm">← Go Back</a>
+  </div>
+</div>
+<div class="toast" id="toast"><span id="ticon">✓</span><span id="tmsg">Done</span></div>
+<div class="page">
+  <div class="gs">
+    <div class="gi" id="gicon">😤</div>
+    <div class="gt"><h1 id="gtitle">Stress Reduction</h1><p id="gdesc">Best mantras for calming your mind</p></div>
+    <div class="gbadge" id="gbadge">ML Recommended</div>
+  </div>
+  <div class="layout">
+    <div class="ml" id="mlist"></div>
+    <div class="pp">
+      <div class="ppname" id="ppname">Om</div>
+      <div class="pptrad" id="pptrad">Hindu · 136.1 Hz</div>
+      <div class="tw">
+        <svg class="tsvg" width="170" height="170" viewBox="0 0 170 170">
+          <circle class="tbg" cx="85" cy="85" r="74"/>
+          <circle class="tfill" id="tarc" cx="85" cy="85" r="74" stroke-dasharray="465" stroke-dashoffset="465"/>
+        </svg>
+        <div class="tc"><div class="tt" id="tdisp">15:00</div><div class="tl" id="tlbl">READY</div></div>
+      </div>
+      <div class="dr" id="durationRow">
+        <div class="dl">Duration</div>
+        <div class="dps">
+          <button class="dp" onclick="setDur(5)">5m</button>
+          <button class="dp" onclick="setDur(10)">10m</button>
+          <button class="dp active" onclick="setDur(15)">15m</button>
+          <button class="dp" onclick="setDur(20)">20m</button>
+          <button class="dp" onclick="setDur(30)">30m</button>
+        </div>
+      </div>
+      <div class="dr">
+        <div class="dl">Session Mode</div>
+        <div class="dps">
+          <button class="dp active" id="timeModeBtn" onclick="setMode('time')">Time</button>
+          <button class="dp" id="japaModeBtn" onclick="setMode('japa')">Japa</button>
+        </div>
+      </div>
+      <div class="cs">
+        <div class="cl">🔔 Japa Counter (108)</div>
+        <div class="cd"><div class="cn" id="cnum">0</div><div class="cof">/ 108</div></div>
+        <div class="cp"><div class="cpf" id="cpf" style="width:0%"></div></div>
+        <div class="cbeads" id="cbeads"></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:.4rem">Press <strong style="color:var(--gold)">Space</strong> or <strong style="color:var(--gold)">🔔</strong> to count</div>
+      </div>
+      <div class="ctrl">
+        <button class="cb" onclick="resetSess()" title="Reset">↺</button>
+        <button class="pb" id="pbtn" onclick="togglePlay()">▶</button>
+        <button class="cb" id="countBtn" onclick="manualCount()" title="Count (Space)">🔔</button>
+      </div>
+      <div class="fr"><span>Healing Frequency</span><span class="fv" id="fval">136.1 Hz</span></div>
+      <div class="lyric-box"><div class="cl">Mantra Lyrics</div><div class="lyric" id="lyricText">Om</div></div>
+      <div class="bts" id="pbts"></div>
+    </div>
+  </div>
+</div>
+<script>
+const MANTRAS=[
+  {id:'om',name:'Om',sym:'ॐ',symBg:'rgba(244,197,66,.12)',trad:'Hindu',freq:136.1,color:'#F4C542',goals:['stress','anxiety','calm','general'],desc:'Primordial sound of the universe. Creates vagal nerve stimulation and deep alpha wave induction.',benefits:['Cortisol −22%','Alpha +26%','HRV +14','Vagus Nerve'],goalTags:{stress:'Best for Stress',anxiety:'Calms Anxiety',calm:'Deep Peace',general:'Universal'},wf:136.1,lyrics:'Om\nOm\nOm'},
+  {id:'gayatri',name:'Gayatri',sym:'गा',symBg:'rgba(79,195,247,.12)',trad:'Vedic',freq:528,color:'#4FC3F7',goals:['focus','anxiety','stress','general'],desc:'24-syllable solar mantra activates prefrontal cortex and calms the amygdala dramatically.',benefits:['Cortisol −26%','Alpha +30%','Amygdala Calm','528 Hz'],goalTags:{focus:'Boosts Focus',anxiety:'Best for Anxiety',stress:'Stress Relief',general:'Wisdom'},wf:528,lyrics:'Om Bhur Bhuvah Svah\nTat Savitur Varenyam\nBhargo Devasya Dhimahi\nDhiyo Yo Nah Prachodayat'},
+  {id:'om_mani',name:'Om Mani Padme Hum',sym:'☯',symBg:'rgba(179,157,219,.12)',trad:'Buddhist',freq:174,color:'#B39DDB',goals:['sleep','calm','anxiety','general'],desc:'Six-syllable compassion mantra activates mirror neuron networks. Ideal for sleep and emotional calm.',benefits:['Cortisol −18%','Alpha +22%','Sleep Quality','HRV +12'],goalTags:{sleep:'Best for Sleep',calm:'Emotional Calm',anxiety:'Anxiety Relief',general:'Compassion'},wf:174,lyrics:'Om Mani Padme Hum\nOm Mani Padme Hum\nOm Mani Padme Hum'},
+  {id:'shma',name:'Shma',sym:'ה',symBg:'rgba(62,224,122,.12)',trad:'Jewish',freq:432,color:'#3EE07A',goals:['focus','stress','general'],desc:'Breath-word coupling synchronizes cardiovascular rhythms. Fastest cortisol normalization of all mantras.',benefits:['Fastest Cortisol Drop','Gamma Waves','Prefrontal Boost','HRV Sync'],goalTags:{focus:'Laser Focus',stress:'Rapid Calm',general:'Unity'},wf:432,lyrics:'Shema Yisrael Adonai Eloheinu Adonai Echad\nHear, O Israel, the Lord is our God, the Lord is One'},
+  {id:'sufi',name:'Sufi Dhikr',sym:'☽',symBg:'rgba(255,140,66,.12)',trad:'Islamic',freq:285,color:'#FF8C42',goals:['fitness','stress','general'],desc:'120 rpm rhythm creates strongest ANS entrainment and highest HRV improvement in clinical studies.',benefits:['Highest HRV +18','ANS Entrainment','Resilience Boost','Energy Boost'],goalTags:{fitness:'Fitness & Energy',stress:'Stress Buster',general:'Remembrance'},wf:285,lyrics:'La ilaha illa Allah\nAllah Hu Allah Hu\nAllah Hu Allah Hu'},
+  {id:'hesychasm',name:'Hesychasm',sym:'✝',symBg:'rgba(239,83,80,.12)',trad:'Orthodox',freq:396,color:'#EF5350',goals:['sleep','calm','flexibility','general'],desc:'Silent inner repetition induces prefrontal-limbic decoupling — the deepest relaxation state in our dataset.',benefits:['Deepest Relaxation','Limbic Decoupling','Inner Silence','HRV +13'],goalTags:{sleep:'Deep Sleep',calm:'Deepest Calm',flexibility:'Mind-Body',general:'Stillness'},wf:396,lyrics:'Lord Jesus Christ, Son of God, have mercy on me, a sinner\nLord Jesus Christ, Son of God, have mercy on me, a sinner'}
+];
+const GOALS={stress:{icon:'😤',title:'Stress Reduction',desc:'Best mantras for calming your mind and reducing cortisol',badge:'ML Recommended'},sleep:{icon:'🌙',title:'Better Sleep',desc:'Mantras that activate parasympathetic system for deep sleep',badge:'Sleep Science'},anxiety:{icon:'🌸',title:'Anxiety Relief',desc:'Mantras proven to calm the amygdala and reduce anxiety',badge:'Clinically Backed'},focus:{icon:'🎯',title:'Focus & Concentration',desc:'Mantras that boost prefrontal cortex and gamma coherence',badge:'Brain Boost'},calm:{icon:'🌺',title:'Emotional Calm',desc:'Mantras for emotional regulation and inner stillness',badge:'Heart Healing'},fitness:{icon:'🏋️',title:'Physical Fitness',desc:'High-tempo mantras that boost energy, HRV and resilience',badge:'Energy Boost'},flexibility:{icon:'🧘',title:'Flexibility & Balance',desc:'Mantras for mind-body connection',badge:'Mind-Body'},general:{icon:'✨',title:'All Mantras',desc:'Explore all 6 mantra traditions',badge:'Full Collection'}};
+let goal=new URLSearchParams(location.search).get('goal')||'stress';
+let selMantra=null,isPlaying=false,totalSec=900,remSec=900,timerIv=null,count=0,sessionMode='time';
+function init(){
+  setMode('time');
+  const g=GOALS[goal]||GOALS.general;
+  document.getElementById('gicon').textContent=g.icon;
+  document.getElementById('gtitle').textContent=g.title;
+  document.getElementById('gdesc').textContent=g.desc;
+  document.getElementById('gbadge').textContent=g.badge;
+  document.getElementById('navlbl').textContent=g.title;
+  document.title=g.title+' — Mantra & Mind';
+  const ms=MANTRAS.filter(m=>goal==='general'?true:m.goals.includes(goal));
+  const list=document.getElementById('mlist');
+  list.innerHTML=ms.map((m,i)=>`
+    <div class="mc ${i===0?'active':''}" id="mc_${m.id}" onclick="selM('${m.id}')">
+      <div class="mctop">
+        <div class="mcsym" style="background:${m.symBg};border-color:${m.color}33">${m.sym}</div>
+        <div><div class="mcname">${m.name}</div><div class="mctrad">${m.trad}</div></div>
+        <div class="mctag" style="background:${m.color}15;border:1px solid ${m.color}30;color:${m.color}">${m.goalTags[goal]||m.goalTags.general||''}</div>
+      </div>
+      <div class="mcdesc">${m.desc}</div>
+      <div class="mcstats">
+        <div class="mcs">📉 <span>${m.benefits[0]}</span></div>
+        <div class="mcs">🧠 <span>${m.benefits[1]}</span></div>
+        <div class="mcs">💓 <span>${m.benefits[2]}</span></div>
+      </div>
+      <div class="playing" id="pl_${m.id}"><div class="bars"><span></span><span></span><span></span><span></span><span></span></div>Now Playing</div>
+    </div>`).join('');
+  buildBeads();
+  selM(ms[0]?.id||'om',false);
+}
+function selM(id,doStop=true){
+  if(doStop&&isPlaying)stopSess();
+  const m=MANTRAS.find(x=>x.id===id);if(!m)return;
+  selMantra=m;
+  document.querySelectorAll('.mc').forEach(c=>c.classList.remove('active'));
+  const cd=document.getElementById('mc_'+id);if(cd){cd.classList.add('active');cd.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  document.getElementById('ppname').textContent=m.name;
+  document.getElementById('pptrad').textContent=m.trad+' · '+m.freq+' Hz';
+  document.getElementById('fval').textContent=m.freq+' Hz';
+  document.getElementById('lyricText').textContent=m.lyrics;
+  document.getElementById('tarc').style.stroke=m.color;
+  document.getElementById('pbts').innerHTML=m.benefits.map(b=>`<span class="bt">${b}</span>`).join('');
+  showToast('✓',m.name+' selected',m.color);
+}
+function setDur(mins){if(isPlaying||sessionMode!=='time')return;totalSec=mins*60;remSec=mins*60;updDisp();updArc(1);document.querySelectorAll('.dp').forEach(p=>p.classList.toggle('active',p.textContent===mins+'m'));}
+function setMode(mode){if(isPlaying)return;sessionMode=mode;document.getElementById('timeModeBtn').classList.toggle('active',mode==='time');document.getElementById('japaModeBtn').classList.toggle('active',mode==='japa');document.getElementById('durationRow').style.display=mode==='time'?'flex':'none';document.getElementById('pbtn').classList.toggle('disabled',mode!=='time');document.getElementById('countBtn').classList.toggle('disabled',mode!=='japa');document.getElementById('pbtn').disabled=mode!=='time';document.getElementById('countBtn').disabled=mode!=='japa';document.getElementById('tlbl').textContent=mode==='time'?'READY':'JAPA MODE';if(mode==='time'){updDisp();updArc(remSec/totalSec);}else{document.getElementById('tdisp').textContent='JAPA';document.getElementById('tarc').style.strokeDashoffset=0;}}
+function updDisp(){const m=Math.floor(remSec/60),s=remSec%60;document.getElementById('tdisp').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+function updArc(f){document.getElementById('tarc').style.strokeDashoffset=465*(1-f);}
+function togglePlay(){if(sessionMode!=='time'){showToast('⚠️','Switch to Time mode to use timer','#6B7A99');return;}isPlaying?pauseSess():startSess();}
+function startSess(){
+  if(remSec<=0){remSec=totalSec;count=0;updBeads();document.getElementById('cnum').textContent='0';document.getElementById('cpf').style.width='0%';}
+  isPlaying=true;
+  document.getElementById('pbtn').textContent='⏸';document.getElementById('pbtn').classList.add('playing');
+  document.querySelectorAll('[id^=pl_]').forEach(e=>e.classList.remove('show'));
+  if(selMantra)document.getElementById('pl_'+selMantra.id)?.classList.add('show');
+  if(sessionMode==='time'){
+    timerIv=setInterval(()=>{
+      remSec--;updDisp();updArc(remSec/totalSec);
+      if(remSec<=0)completeSess();
+    },1000);
+  } else {
+    document.getElementById('tlbl').textContent='JAPA MODE';
+  }
+}
+function pauseSess(){isPlaying=false;clearInterval(timerIv);document.getElementById('pbtn').textContent='▶';document.getElementById('pbtn').classList.remove('playing');document.getElementById('tlbl').textContent='PAUSED';showToast('⏸','Paused','#6B7A99');}
+function stopSess(){isPlaying=false;clearInterval(timerIv);document.getElementById('pbtn').textContent='▶';document.getElementById('pbtn').classList.remove('playing');document.getElementById('tlbl').textContent='READY';document.querySelectorAll('[id^=pl_]').forEach(e=>e.classList.remove('show'));}
+function manualCount(){if(sessionMode!=='japa'){showToast('⚠️','Switch to Japa mode to count','#6B7A99');return;}if(count>=108){count=0;showToast('🔔','New mala started!','#F4C542');}else{count++;}document.getElementById('cnum').textContent=count;document.getElementById('cpf').style.width=(count/108*100)+'%';updBeads();if(count===108){showToast('🎉','108 complete!','#F4C542');}}
+function resetSess(){stopSess();document.getElementById('cov').classList.remove('show');remSec=totalSec;count=0;updDisp();updArc(1);document.getElementById('cnum').textContent='0';document.getElementById('cpf').style.width='0%';updBeads();showToast('↺','Reset','#6B7A99');}
+function completeSess(){
+  stopSess();
+  const mins=sessionMode==='time'?Math.floor(totalSec/60):null;
+  document.getElementById('coname').textContent=(selMantra?.name||'Mantra')+' Session';
+  document.getElementById('cofin').textContent=count;
+  document.getElementById('codur').textContent=sessionMode==='time'?mins+' min':'Japa';
+  document.getElementById('cofreq').textContent=(selMantra?.freq||'—')+' Hz';
+  document.getElementById('cov').classList.add('show');
+}
+function restartSess(){document.getElementById('cov').classList.remove('show');resetSess();}
+function buildBeads(){const w=document.getElementById('cbeads');w.innerHTML=Array.from({length:108},(_,i)=>`<div class="bead" id="b${i}"></div>`).join('');}
+function updBeads(){for(let i=0;i<108;i++){const b=document.getElementById('b'+i);if(!b)continue;b.className='bead'+(i<count-1?' done':i===count-1?' cur':'');}}
+let tT=null;
+function showToast(icon,msg,color='#3EE07A'){const t=document.getElementById('toast'),ti=document.getElementById('ticon'),tm=document.getElementById('tmsg');ti.textContent=icon;tm.textContent=msg;t.style.borderColor=color+'40';t.style.color=color;t.classList.add('show');if(tT)clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2500);}
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='BUTTON'){e.preventDefault();manualCount();}if(e.code==='Enter'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='BUTTON'){e.preventDefault();togglePlay();}});
+init();
+
+// ── Prediction ──────────────────────────────────────────────
+async function runPrediction(){
+  const btn = document.querySelector('.pred-btn');
+  btn.textContent = '⏳ Predicting…'; btn.disabled = true;
+  const mantra = selMantra ? selMantra.id : 'om';
+  const duration = parseInt(document.getElementById('pDuration').value)||15;
+  const age = parseInt(document.getElementById('pAge').value)||28;
+  const gender = document.getElementById('pGender').value;
+  const experience = document.getElementById('pExp').value;
+  const pre_stress = parseInt(document.getElementById('pStress').value)||7;
+  const pre_anxiety = parseInt(document.getElementById('pAnxiety').value)||6;
+  const pre_focus = parseInt(document.getElementById('pFocus').value)||50;
+  const pre_calm = parseInt(document.getElementById('pCalm').value)||40;
+  try {
+    const res = await fetch('/predict', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({mantra, duration, rpm:108, breath_sync:4,
+        pre_stress, pre_anxiety, pre_focus, pre_calm, age, gender, experience})
+    });
+    const data = await res.json();
+    if(data.success) showPredResult(data);
+    else showToast('❌', data.error||'Prediction failed','#EF5350');
+  } catch(e){ showToast('❌','Network error','#EF5350'); }
+  btn.textContent='🧠 Predict Effectiveness'; btn.disabled=false;
+}
+
+function showPredResult(data){
+  const el = document.getElementById('predResult');
+  el.classList.add('show');
+  // Model badge
+  const badge = document.getElementById('predModelBadge');
+  const isML = data.model_used === 'ML';
+  const isFallback = data.dl_failed;
+  badge.className = 'pred-model-badge ' + (isML ? (isFallback?'fallback':'ml') : 'dl');
+  badge.textContent = (data.model_icon||'🤖') + ' ' + data.model_name +
+    (isFallback ? ' (DL failed → ML fallback)' : (' — Used: ' + data.model_used)) +
+    ' | Acc: ' + Math.round((data.model_accuracy||0)*100) + '% | F1: ' + Math.round((data.model_f1||0)*1000)/10 + '%';
+  // Effectiveness
+  const eff = data.effectiveness;
+  const effEl = document.getElementById('predEff');
+  const effClass = eff==='high'?'eff-high':eff==='low'?'eff-low':'eff-medium';
+  const effEmoji = eff==='high'?'🌟':eff==='low'?'⚠️':'✅';
+  effEl.innerHTML = `Predicted Effectiveness: <span class="${effClass}">${effEmoji} ${eff.charAt(0).toUpperCase()+eff.slice(1)}</span>`;
+  // Probabilities
+  const probsEl = document.getElementById('predProbs');
+  const probColors = {high:'#3EE07A',medium:'#F4C542',low:'#EF5350'};
+  probsEl.innerHTML = Object.entries(data.probabilities).map(([k,v])=>`
+    <div class="pred-prob-item">
+      <div class="pp-label">${k}</div>
+      <div class="pp-val" style="color:${probColors[k]||'var(--text)'}">${Math.round(v*100)}%</div>
+    </div>`).join('');
+  // Metrics
+  const m = data.metrics;
+  const metricsEl = document.getElementById('predMetrics');
+  metricsEl.innerHTML = [
+    ['Stress Reduction','−'+m.stress_reduction,'#4FC3F7'],
+    ['Anxiety Reduction','−'+m.anxiety_reduction,'#B39DDB'],
+    ['Focus Gain','+'+m.focus_gain,'#3EE07A'],
+    ['Calm Gain','+'+m.calm_gain,'#3EE07A'],
+    ['HRV Change',m.hrv_change>0?'+'+m.hrv_change:m.hrv_change,'#F4C542'],
+    ['Cortisol Change',m.cortisol_change+'%','#FF8C42'],
+  ].map(([label,val,col])=>`<div class="pred-metric"><span class="pm-label">${label}</span><span class="pm-val" style="color:${col}">${val}</span></div>`).join('');
+  // Comparison table
+  if(data.comparison) buildComparison(data.comparison, data.model_used_key);
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function buildComparison(cmp, activeKey){
+  const tbody = document.getElementById('cmpBody');
+  const typeColors = {DL:'#4FC3F7', ML:'#3EE07A'};
+  const bestF1 = Math.max(...Object.values(cmp).map(m=>m.f1_score));
+  const rows = Object.entries(cmp).sort((a,b)=>b[1].f1_score-a[1].f1_score).map(([key,m])=>{
+    const isWinner = m.f1_score === bestF1;
+    const isActive = key === activeKey;
+    const barW = Math.round(m.accuracy*100);
+    const col = typeColors[m.type]||'#F4C542';
+    return `<tr class="${isWinner?'winner':''}">
+      <td>${isActive?'▶ ':''}${m.icon} ${m.name}${isWinner?'<span class="cmp-winner-badge">Best</span>':''}</td>
+      <td><span class="cmp-type-badge ${m.type.toLowerCase()}">${m.type}</span></td>
+      <td>
+        <span style="font-size:12px;color:${col};font-weight:500">${Math.round(m.accuracy*1000)/10}%</span>&nbsp;
+        <span class="cmp-bar-wrap"><span class="cmp-bar" style="width:${barW}%;background:${col}"></span></span>
+      </td>
+      <td style="color:${col}">${Math.round(m.f1_score*1000)/10}%</td>
+      <td style="color:var(--muted)">${m.mse}</td>
+    </tr>`;
+  }).join('');
+  tbody.innerHTML = rows;
+}
+
+</script>
+
+<!-- ── Prediction Panel ──────────────────────────────────── -->
+<div class="page" style="padding-top:0">
+
+  <div class="pred-panel">
+    <div class="pred-header">
+      <span style="font-size:22px">🔮</span>
+      <h3>Predict Mantra Effectiveness from Your Mood</h3>
+    </div>
+    <div class="pred-form">
+      <div class="pred-field">
+        <label>Age</label>
+        <input type="number" id="pAge" value="28" min="10" max="90">
+      </div>
+      <div class="pred-field">
+        <label>Gender</label>
+        <select id="pGender"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select>
+      </div>
+      <div class="pred-field">
+        <label>Experience Level</label>
+        <select id="pExp"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select>
+      </div>
+      <div class="pred-field">
+        <label>Pre-Stress (1–10)</label>
+        <input type="number" id="pStress" value="7" min="1" max="10">
+      </div>
+      <div class="pred-field">
+        <label>Pre-Anxiety (1–10)</label>
+        <input type="number" id="pAnxiety" value="6" min="1" max="10">
+      </div>
+      <div class="pred-field">
+        <label>Pre-Focus (1–100)</label>
+        <input type="number" id="pFocus" value="50" min="1" max="100">
+      </div>
+      <div class="pred-field">
+        <label>Pre-Calm (1–100)</label>
+        <input type="number" id="pCalm" value="40" min="1" max="100">
+      </div>
+      <div class="pred-field">
+        <label>Duration (minutes)</label>
+        <input type="number" id="pDuration" value="15" min="1" max="60">
+      </div>
+    </div>
+    <button class="pred-btn" onclick="runPrediction()">🧠 Predict Effectiveness</button>
+
+    <div class="pred-result" id="predResult">
+      <div id="predModelBadge" class="pred-model-badge dl">🧠 Deep Learning (MLP)</div>
+      <div class="pred-eff" id="predEff"></div>
+      <div class="pred-probs" id="predProbs"></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:.4rem">📊 Predicted Biometric Changes</div>
+      <div class="pred-metrics-grid" id="predMetrics"></div>
+    </div>
+  </div>
+
+  <!-- ── Model Comparison ────────────────────────────────── -->
+  <div class="cmp-section">
+    <h3>⚖️ DL vs ML — Model Accuracy Comparison</h3>
+    <table class="cmp-table" id="cmpTable">
+      <thead><tr>
+        <th>Model</th><th>Type</th><th>Accuracy</th><th>F1 Score</th><th>MSE</th>
+      </tr></thead>
+      <tbody id="cmpBody">
+        <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1rem">Run a prediction to load comparison data…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+</body>
+</html>

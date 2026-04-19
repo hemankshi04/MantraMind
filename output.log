@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "c:\Users\sahus\Desktop\health\mental_health_analysis\train_dl_enhanced_model.py", line 46, in <module>
+    # TensorFlow/Keras for Deep Learning
+ModuleNotFoundError: No module named 'tensorflow'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\sahus\Desktop\health\mental_health_analysis\train_dl_enhanced_model.py", line 58, in <module>
+    from sklearn.neural_network import MLPClassifier
+  File "C:\Python314\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u26a0' in position 0: character maps to <undefined>

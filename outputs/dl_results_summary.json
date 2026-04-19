@@ -1,0 +1,54 @@
+{
+  "ML": {
+    "Original (200)": {
+      "Random Forest": {
+        "test_acc": 0.975,
+        "f1": 0.9754,
+        "mse": 0.1
+      },
+      "Gradient Boosting": {
+        "test_acc": 0.975,
+        "f1": 0.9754,
+        "mse": 0.1
+      },
+      "Logistic Reg": {
+        "test_acc": 0.975,
+        "f1": 0.9754,
+        "mse": 0.1
+      }
+    },
+    "All Combined (800)": {
+      "Random Forest": {
+        "test_acc": 0.9313,
+        "f1": 0.93,
+        "mse": 0.1437
+      },
+      "Gradient Boosting": {
+        "test_acc": 0.9313,
+        "f1": 0.9311,
+        "mse": 0.1437
+      },
+      "Logistic Reg": {
+        "test_acc": 0.9125,
+        "f1": 0.9134,
+        "mse": 0.1625
+      }
+    }
+  },
+  "DL": {
+    "Original (200)": {
+      "MLP Classifier": {
+        "test_acc": 0.85,
+        "f1": 0.8591,
+        "mse": 0.45
+      }
+    },
+    "All Combined (800)": {
+      "MLP Classifier": {
+        "test_acc": 0.8562,
+        "f1": 0.8582,
+        "mse": 0.2938
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mantra Suggestion — Mantra & Mind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080C12;--card:#141B27;--border:#1E2A3A;--gold:#F4C542;--text:#E8F0FE;--muted:#6B7A99;--green:#3EE07A;--blue:#4FC3F7;--purple:#B39DDB;--orange:#F0883E;--red:#EF5350}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(244,197,66,.06),transparent 55%);pointer-events:none}
+nav{position:sticky;top:0;z-index:100;background:rgba(8,12,18,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem}
+.brand{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-style:italic}
+.nl{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;border:1px solid transparent;transition:all .2s}
+.nl:hover{background:var(--card);border-color:var(--border);color:var(--text)}
+.main{max-width:960px;margin:0 auto;padding:2.5rem 1.5rem 4rem;position:relative;z-index:1}
+.aff{background:linear-gradient(135deg,rgba(244,197,66,.07),rgba(62,224,122,.04));border:1px solid rgba(244,197,66,.2);border-radius:14px;padding:1rem 1.5rem;margin-bottom:2.5rem;display:flex;align-items:center;gap:12px}
+.at{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--text);flex:1;line-height:1.5}
+.ab{background:none;border:1px solid rgba(244,197,66,.25);border-radius:8px;padding:5px 12px;color:var(--gold);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.ab:hover{background:rgba(244,197,66,.08)}
+.sh{text-align:center;margin-bottom:2.5rem}
+.sh h1{font-family:'Playfair Display',serif;font-size:28px;color:var(--text);margin-bottom:.35rem}
+.sh p{font-size:12px;color:var(--muted);letter-spacing:.06em}
+.gg{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem}
+@media(max-width:700px){.gg{grid-template-columns:repeat(2,1fr)}}
+.gc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem .85rem;text-align:center;cursor:pointer;text-decoration:none;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:.5rem;position:relative;overflow:hidden}
+.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:transparent;transition:background .2s}
+.gc:hover{transform:translateY(-4px);border-color:#2E3D50}
+.gc:hover::before,.gc.sel::before{background:var(--cc,var(--gold))}
+.gc.sel{border-color:var(--gold)}
+.gci{font-size:32px;transition:transform .2s}
+.gc:hover .gci{transform:scale(1.12)}
+.gcn{font-size:13px;font-weight:600;color:var(--text)}
+.gcs{font-size:10px;color:var(--muted);line-height:1.3}
+.gct{padding:2px 9px;border-radius:12px;font-size:10px;font-weight:500;margin-top:3px}
+.cr{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem}
+@media(max-width:600px){.cr{grid-template-columns:1fr}}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
+.cl{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.85rem}
+.mp{display:flex;gap:.75rem}
+.mb{flex:1;padding:8px 6px;border-radius:10px;text-align:center;cursor:pointer;border:1px solid var(--border);background:none;transition:all .2s;font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif}
+.mb:hover{border-color:#2E3D50;color:var(--text)}
+.mb.active{border-color:var(--gold);background:rgba(244,197,66,.08);color:var(--gold)}
+.mj{font-size:18px;display:block;margin-bottom:2px}
+.sr{display:flex;align-items:center;gap:10px}
+.sn{font-size:26px;font-weight:300;color:var(--gold);min-width:30px;text-align:center}
+input[type=range]{width:100%;cursor:pointer;accent-color:var(--gold)}
+.sh2{font-size:10px;color:var(--muted);margin-top:5px}
+.pb{text-align:center;margin-bottom:3rem}
+.predict-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 44px;background:linear-gradient(135deg,#F4C542,#E6A817);color:#080C12;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(244,197,66,.25)}
+.predict-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(244,197,66,.35)}
+.predict-btn.loading{background:#444;cursor:not-allowed;transform:none;box-shadow:none}
+#rs{display:none;animation:fu .5s ease}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.mr{background:linear-gradient(135deg,rgba(62,224,122,.07),rgba(79,195,247,.04));border:1px solid rgba(62,224,122,.25);border-radius:16px;padding:2rem;margin-bottom:2rem}
+.rh2{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem}
+.rsym{font-size:48px;width:75px;height:75px;border-radius:50%;background:rgba(62,224,122,.1);border:2px solid rgba(62,224,122,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rin{} .rn{font-family:'Playfair Display',serif;font-size:24px;color:var(--text);margin-bottom:.25rem}
+.rt{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.4rem}
+.rf{display:inline-block;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.2);color:var(--blue);border-radius:20px;padding:2px 10px;font-size:11px}
+.rm{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.25rem}
+@media(max-width:500px){.rm{grid-template-columns:repeat(2,1fr)}}
+.rmt{text-align:center;background:rgba(255,255,255,.04);border-radius:10px;padding:.7rem}
+.rmv{font-size:20px;font-weight:300;color:var(--green)}
+.rml{font-size:9px;color:var(--muted);margin-top:3px}
+.rsci{background:rgba(179,157,219,.07);border-left:3px solid var(--purple);padding:11px 14px;font-size:13px;font-style:italic;line-height:1.6;color:#C9D1D9;margin-bottom:1.25rem;border-radius:0 8px 8px 0}
+.ag{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+@media(max-width:500px){.ag{grid-template-columns:1fr}}
+.ab2{padding:11px;border-radius:12px;border:1px solid;cursor:pointer;transition:all .2s;text-align:left;font-family:'DM Sans',sans-serif;background:transparent}
+.ab2:hover{transform:translateY(-2px)}
+.abi{font-size:18px;margin-bottom:3px;display:block}
+.abt{font-size:12px;font-weight:600;display:block;margin-bottom:2px}
+.abs2{font-size:10px;opacity:.7;display:block}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;display:flex;align-items:center;justify-content:center;padding:1rem;animation:fo .2s ease}
+@keyframes fo{from{opacity:0}to{opacity:1}}
+.mbox{background:#141B27;border:1px solid #1E2A3A;border-radius:20px;padding:2rem;max-width:460px;width:100%;position:relative;animation:sc .25s ease;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+@keyframes sc{from{transform:scale(.93)}to{transform:scale(1)}}
+.mx{position:absolute;top:12px;right:14px;background:none;border:none;color:#6B7A99;font-size:20px;cursor:pointer;line-height:1;padding:4px}
+.mx:hover{color:var(--text)}
+.mh2{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem}
+.mico{font-size:32px}
+.mti{font-size:18px;font-weight:600;color:var(--text)}
+.msu{font-size:11px;color:var(--muted);margin-top:1px}
+.msteps{list-style:none;margin-bottom:1.25rem}
+.msteps li{display:flex;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid #21262D;font-size:13px;color:#C9D1D9;line-height:1.4}
+.msteps li:last-child{border-bottom:none}
+.snum{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#080C12;margin-top:1px}
+.mtip{border-radius:10px;padding:10px 14px;font-size:12px;color:#C9D1D9;border-left:3px solid;font-style:italic;margin-bottom:1.25rem;line-height:1.5}
+.mtip strong{font-style:normal;color:var(--text)}
+.mcta{width:100%;padding:11px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;color:#080C12}
+.mcta:hover{opacity:.85}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">🌱 Mantra & Mind</div>
+  <div style="display:flex;gap:6px">
+    <a href="/dashboard" class="nl">← Dashboard</a>
+    <a href="/player" class="nl">🎵 Player</a>
+    <a href="/logout" class="nl">Logout</a>
+  </div>
+</nav>
+<div class="main">
+  <div class="aff">
+    <div style="font-size:20px">✨</div>
+    <div class="at" id="at">Today I choose peace over anxiety, growth over fear.</div>
+    <button class="ab" onclick="newAff()">↻ New</button>
+  </div>
+  <div class="sh">
+    <h1>🧘 What Are You Looking For Today?</h1>
+    <p>Click a goal to get personalised mantra suggestion with player</p>
+  </div>
+  <div class="gg">
+    <a class="gc sel" href="/player?goal=stress" style="--cc:#EF5350"><div class="gci">😤</div><div class="gcn">Stress Reduction</div><div class="gcs">Om & Gayatri mantras</div><div class="gct" style="background:rgba(239,83,80,.12);color:#EF5350">−22% Cortisol</div></a>
+    <a class="gc" href="/player?goal=sleep" style="--cc:#B39DDB"><div class="gci">🌙</div><div class="gcn">Better Sleep</div><div class="gcs">Om Mani & Hesychasm</div><div class="gct" style="background:rgba(179,157,219,.12);color:#B39DDB">Sleep Science</div></a>
+    <a class="gc" href="/player?goal=anxiety" style="--cc:#4FC3F7"><div class="gci">🌸</div><div class="gcn">Anxiety Relief</div><div class="gcs">Gayatri & Om mantras</div><div class="gct" style="background:rgba(79,195,247,.12);color:#4FC3F7">−26% Cortisol</div></a>
+    <a class="gc" href="/player?goal=focus" style="--cc:#3EE07A"><div class="gci">🎯</div><div class="gcn">Focus & Concentration</div><div class="gcs">Shma & Gayatri</div><div class="gct" style="background:rgba(62,224,122,.12);color:#3EE07A">Gamma Waves</div></a>
+    <a class="gc" href="/player?goal=calm" style="--cc:#F4C542"><div class="gci">🌺</div><div class="gcn">Emotional Calm</div><div class="gcs">Om & Hesychasm</div><div class="gct" style="background:rgba(244,197,66,.12);color:#F4C542">Deep Peace</div></a>
+    <a class="gc" href="/player?goal=fitness" style="--cc:#FF8C42"><div class="gci">🏋️</div><div class="gcn">Physical Fitness</div><div class="gcs">Sufi Dhikr — energy boost</div><div class="gct" style="background:rgba(255,140,66,.12);color:#FF8C42">HRV +18</div></a>
+    <a class="gc" href="/player?goal=flexibility" style="--cc:#B39DDB"><div class="gci">🧘</div><div class="gcn">Flexibility & Balance</div><div class="gcs">Om for mind-body</div><div class="gct" style="background:rgba(179,157,219,.12);color:#B39DDB">Mind-Body</div></a>
+    <a class="gc" href="/player?goal=general" style="--cc:#F4C542"><div class="gci">✨</div><div class="gcn">All 6 Mantras</div><div class="gcs">Explore all traditions</div><div class="gct" style="background:rgba(244,197,66,.12);color:#F4C542">Full Library</div></a>
+  </div>
+  <div class="cr">
+    <div class="cc"><div class="cl">Current Mood</div>
+      <div class="mp">
+        <button class="mb active" onclick="selMood(this,'happy')"><span class="mj">😊</span>Happy</button>
+        <button class="mb" onclick="selMood(this,'neutral')"><span class="mj">😐</span>Neutral</button>
+        <button class="mb" onclick="selMood(this,'stressed')"><span class="mj">😤</span>Stressed</button>
+      </div>
+    </div>
+    <div class="cc"><div class="cl">Stress Level (1=Calm · 10=Very Stressed)</div>
+      <div class="sr"><input type="range" id="sl2" min="1" max="10" value="5" oninput="updStr(this.value)"><div class="sn" id="sn">5</div></div>
+      <div class="sh2" id="shint">Moderate stress — manageable with regular practice</div>
+    </div>
+  </div>
+  <div class="pb">
+    <a href="/player?goal=stress" class="predict-btn">✨ Get My Mantra Suggestion →</a>
+  </div>
+</div>
+<script>
+const AFFS=["Today I choose peace over anxiety, growth over fear.","You are stronger than you think.","My mind is calm. My body is healthy. My spirit is strong.","I release what I cannot control and embrace what I can.","Every breath I take fills me with calm and clarity.","I am worthy of rest, healing, and happiness.","Small steps forward are still progress.","This moment is temporary. My strength is permanent."];
+const HINTS={1:'Very calm 🧘',2:'Very calm — great day',3:'Mildly stressed',4:'Light stress',5:'Moderate stress',6:'Noticeable stress',7:'High stress — chant today',8:'High stress — Gayatri advised',9:'Very high — breathe first',10:'Critical — session needed!'};
+function newAff(){const e=document.getElementById('at');e.style.opacity='0';setTimeout(()=>{e.textContent=AFFS[Math.floor(Math.random()*AFFS.length)];e.style.opacity='1';},200);e.style.transition='opacity .2s';}
+function updStr(v){document.getElementById('sn').textContent=v;document.getElementById('shint').textContent=HINTS[v]||'';}
+function selMood(el,m){document.querySelectorAll('.mb').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+</script>
+</body>
+</html>

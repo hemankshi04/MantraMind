@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>History — Mantra & Mind</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080C12;--card:#141B27;--border:#1E2A3A;--gold:#F4C542;--text:#E8F0FE;--muted:#6B7A99;--green:#3EE07A;--blue:#4FC3F7;--orange:#F0883E;--red:#EF5350;--purple:#B39DDB}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(8,12,18,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.5rem}
+.brand{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);font-style:italic}
+.nl{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;border:1px solid transparent;transition:all .2s}
+.nl:hover{background:var(--card);border-color:var(--border);color:var(--text)}
+.nl.cta{background:var(--gold);color:#080C12;font-weight:600;border-color:var(--gold)}
+.main{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem}
+.ph h1{font-family:'Playfair Display',serif;font-size:26px;color:var(--text);margin-bottom:.3rem}
+.ph p{font-size:13px;color:var(--muted);margin-bottom:2rem}
+.hi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.25rem;align-items:center;transition:border-color .2s}
+.hi:hover{border-color:#2E3D50}
+.sc{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:2px solid;flex-shrink:0}
+.sc .sn{font-size:15px;font-weight:500;line-height:1}
+.sc .ss{font-size:8px;opacity:.7;margin-top:1px}
+.sc.excellent{border-color:var(--green);color:var(--green);background:rgba(62,224,122,.06)}
+.sc.good{border-color:var(--blue);color:var(--blue);background:rgba(79,195,247,.06)}
+.sc.fair{border-color:var(--orange);color:var(--orange);background:rgba(240,136,62,.06)}
+.sc.needs-care{border-color:var(--red);color:var(--red);background:rgba(239,83,80,.06)}
+.hd{font-size:11px;color:var(--muted);margin-bottom:.25rem}
+.ht{font-size:14px;color:var(--text);font-weight:500}
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:.35rem}
+.pill{padding:2px 9px;border-radius:10px;font-size:10px}
+.pill-happy{background:rgba(62,224,122,.1);color:var(--green)}
+.pill-neutral{background:rgba(79,195,247,.1);color:var(--blue)}
+.pill-sad{background:rgba(239,83,80,.1);color:var(--red)}
+.pill-s{background:rgba(179,157,219,.1);color:var(--purple)}
+.hs{text-align:right;flex-shrink:0}
+.hst{font-size:11px;color:var(--muted);margin-bottom:3px}
+.hst strong{color:var(--text);font-weight:500}
+.empty{text-align:center;padding:4rem 1rem;color:var(--muted)}
+.empty .ei{font-size:44px;margin-bottom:.75rem}
+.empty h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--text);margin-bottom:.4rem}
+.btn-cta{display:inline-block;padding:10px 22px;background:var(--gold);color:#080C12;border-radius:10px;text-decoration:none;font-weight:600;font-size:13px;margin-top:1rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="brand">🌱 Mantra & Mind</div>
+  <div style="display:flex;gap:6px">
+    <a href="/dashboard" class="nl">Dashboard</a>
+    <a href="/checkin" class="nl cta">+ Check In</a>
+    <a href="/logout" class="nl">Logout</a>
+  </div>
+</nav>
+<div class="main">
+  <div class="ph">
+    <h1>📋 Check-in History</h1>
+    <p>{{ user.name }}'s wellness journey — {{ responses|length }} total check-ins</p>
+  </div>
+  {% if responses %}
+    {% for r in responses %}
+    <div class="hi">
+      <div class="sc {{ r.score_category }}">
+        <div class="sn">{{ r.wellness_score|round|int }}</div>
+        <div class="ss">/ 100</div>
+      </div>
+      <div>
+        <div class="hd">{{ r.timestamp.strftime('%d %B %Y, %I:%M %p') }}</div>
+        <div class="ht">{{ r.score_category.replace('-',' ').title() }} Wellness</div>
+        <div class="pills">
+          <span class="pill pill-{{ r.mood }}">{{ r.mood.title() }}</span>
+          {% for s in r.struggles_list %}<span class="pill pill-s">{{ s.replace('_',' ').title() }}</span>{% endfor %}
+        </div>
+      </div>
+      <div class="hs">
+        <div class="hst">Sleep: <strong>{{ r.sleep_hours }}h</strong></div>
+        <div class="hst">Stress: <strong>{{ r.stress_level }}/10</strong></div>
+        <div class="hst">Exercise: <strong>{{ r.exercise_freq }}</strong></div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <div class="ei">📋</div>
+      <h3>No check-ins yet</h3>
+      <p>Start tracking your mental health today</p>
+      <a href="/checkin" class="btn-cta">First Check-in →</a>
+    </div>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,282 @@
+{
+  "Original (200)": {
+    "Random Forest": {
+      "train_acc": 1.0,
+      "test_acc": 0.975,
+      "cv_mean": 0.99,
+      "cv_std": 0.0122,
+      "f1": 0.9754,
+      "precision": 0.9775,
+      "recall": 0.975
+    },
+    "Gradient Boosting": {
+      "train_acc": 1.0,
+      "test_acc": 0.975,
+      "cv_mean": 0.995,
+      "cv_std": 0.01,
+      "f1": 0.9754,
+      "precision": 0.9775,
+      "recall": 0.975
+    },
+    "SVM": {
+      "train_acc": 1.0,
+      "test_acc": 0.95,
+      "cv_mean": 0.93,
+      "cv_std": 0.051,
+      "f1": 0.9514,
+      "precision": 0.9591,
+      "recall": 0.95
+    },
+    "KNN": {
+      "train_acc": 1.0,
+      "test_acc": 0.9,
+      "cv_mean": 0.865,
+      "cv_std": 0.0624,
+      "f1": 0.9033,
+      "precision": 0.9168,
+      "recall": 0.9
+    },
+    "Logistic Reg": {
+      "train_acc": 1.0,
+      "test_acc": 0.975,
+      "cv_mean": 0.965,
+      "cv_std": 0.0255,
+      "f1": 0.9754,
+      "precision": 0.9775,
+      "recall": 0.975
+    },
+    "Voting Ensemble": {
+      "train_acc": 1.0,
+      "test_acc": 0.975,
+      "cv_mean": 0.995,
+      "cv_std": 0.01,
+      "f1": 0.9754,
+      "precision": 0.9775,
+      "recall": 0.975
+    }
+  },
+  "GAN Synthetic (200)": {
+    "Random Forest": {
+      "train_acc": 1.0,
+      "test_acc": 0.95,
+      "cv_mean": 0.99,
+      "cv_std": 0.0122,
+      "f1": 0.9489,
+      "precision": 0.9553,
+      "recall": 0.95
+    },
+    "Gradient Boosting": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "cv_mean": 1.0,
+      "cv_std": 0.0,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "SVM": {
+      "train_acc": 1.0,
+      "test_acc": 0.925,
+      "cv_mean": 0.905,
+      "cv_std": 0.0367,
+      "f1": 0.9236,
+      "precision": 0.9239,
+      "recall": 0.925
+    },
+    "KNN": {
+      "train_acc": 1.0,
+      "test_acc": 0.875,
+      "cv_mean": 0.885,
+      "cv_std": 0.0255,
+      "f1": 0.8693,
+      "precision": 0.8806,
+      "recall": 0.875
+    },
+    "Logistic Reg": {
+      "train_acc": 1.0,
+      "test_acc": 0.925,
+      "cv_mean": 0.905,
+      "cv_std": 0.0458,
+      "f1": 0.9247,
+      "precision": 0.9263,
+      "recall": 0.925
+    },
+    "Voting Ensemble": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "cv_mean": 1.0,
+      "cv_std": 0.0,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    }
+  },
+  "Orig+GAN (400)": {
+    "Random Forest": {
+      "train_acc": 1.0,
+      "test_acc": 0.9125,
+      "cv_mean": 0.87,
+      "cv_std": 0.0245,
+      "f1": 0.9132,
+      "precision": 0.9158,
+      "recall": 0.9125
+    },
+    "Gradient Boosting": {
+      "train_acc": 1.0,
+      "test_acc": 0.9,
+      "cv_mean": 0.89,
+      "cv_std": 0.0255,
+      "f1": 0.8998,
+      "precision": 0.9001,
+      "recall": 0.9
+    },
+    "SVM": {
+      "train_acc": 1.0,
+      "test_acc": 0.825,
+      "cv_mean": 0.86,
+      "cv_std": 0.0215,
+      "f1": 0.827,
+      "precision": 0.833,
+      "recall": 0.825
+    },
+    "KNN": {
+      "train_acc": 1.0,
+      "test_acc": 0.825,
+      "cv_mean": 0.845,
+      "cv_std": 0.0302,
+      "f1": 0.8217,
+      "precision": 0.8204,
+      "recall": 0.825
+    },
+    "Logistic Reg": {
+      "train_acc": 0.9,
+      "test_acc": 0.875,
+      "cv_mean": 0.87,
+      "cv_std": 0.0302,
+      "f1": 0.875,
+      "precision": 0.8754,
+      "recall": 0.875
+    },
+    "Voting Ensemble": {
+      "train_acc": 1.0,
+      "test_acc": 0.9,
+      "cv_mean": 0.89,
+      "cv_std": 0.0267,
+      "f1": 0.8998,
+      "precision": 0.9001,
+      "recall": 0.9
+    }
+  },
+  "Research Paper (200)": {
+    "Random Forest": {
+      "train_acc": 1.0,
+      "test_acc": 0.95,
+      "cv_mean": 0.97,
+      "cv_std": 0.0187,
+      "f1": 0.95,
+      "precision": 0.95,
+      "recall": 0.95
+    },
+    "Gradient Boosting": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "cv_mean": 0.985,
+      "cv_std": 0.02,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "SVM": {
+      "train_acc": 0.9875,
+      "test_acc": 1.0,
+      "cv_mean": 0.98,
+      "cv_std": 0.0245,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "KNN": {
+      "train_acc": 1.0,
+      "test_acc": 0.975,
+      "cv_mean": 0.98,
+      "cv_std": 0.0245,
+      "f1": 0.9746,
+      "precision": 0.976,
+      "recall": 0.975
+    },
+    "Logistic Reg": {
+      "train_acc": 0.9875,
+      "test_acc": 1.0,
+      "cv_mean": 0.99,
+      "cv_std": 0.02,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    },
+    "Voting Ensemble": {
+      "train_acc": 1.0,
+      "test_acc": 1.0,
+      "cv_mean": 0.99,
+      "cv_std": 0.02,
+      "f1": 1.0,
+      "precision": 1.0,
+      "recall": 1.0
+    }
+  },
+  "All Combined (800)": {
+    "Random Forest": {
+      "train_acc": 1.0,
+      "test_acc": 0.9313,
+      "cv_mean": 0.9175,
+      "cv_std": 0.0242,
+      "f1": 0.9305,
+      "precision": 0.9308,
+      "recall": 0.9313
+    },
+    "Gradient Boosting": {
+      "train_acc": 1.0,
+      "test_acc": 0.9375,
+      "cv_mean": 0.9212,
+      "cv_std": 0.0208,
+      "f1": 0.9375,
+      "precision": 0.9384,
+      "recall": 0.9375
+    },
+    "SVM": {
+      "train_acc": 0.9938,
+      "test_acc": 0.8938,
+      "cv_mean": 0.8862,
+      "cv_std": 0.0073,
+      "f1": 0.8945,
+      "precision": 0.8961,
+      "recall": 0.8938
+    },
+    "KNN": {
+      "train_acc": 1.0,
+      "test_acc": 0.8625,
+      "cv_mean": 0.8612,
+      "cv_std": 0.015,
+      "f1": 0.8606,
+      "precision": 0.8696,
+      "recall": 0.8625
+    },
+    "Logistic Reg": {
+      "train_acc": 0.9109,
+      "test_acc": 0.9125,
+      "cv_mean": 0.8988,
+      "cv_std": 0.0232,
+      "f1": 0.9134,
+      "precision": 0.9146,
+      "recall": 0.9125
+    },
+    "Voting Ensemble": {
+      "train_acc": 1.0,
+      "test_acc": 0.9437,
+      "cv_mean": 0.9188,
+      "cv_std": 0.0247,
+      "f1": 0.9435,
+      "precision": 0.9445,
+      "recall": 0.9437
+    }
+  }
+}
