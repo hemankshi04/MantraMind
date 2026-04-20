@@ -144,20 +144,6 @@ nav{position:sticky;top:0;z-index:300;background:rgba(8,12,18,.92);backdrop-filt
 .pred-metric{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem;display:flex;justify-content:space-between;align-items:center}
 .pred-metric .pm-label{font-size:10px;color:var(--muted)}
 .pred-metric .pm-val{font-size:13px;color:var(--green);font-weight:500}
-/* ── Model Comparison ─── */
-.cmp-section{margin-top:2rem;padding:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:16px}
-.cmp-section h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--text);margin-bottom:1rem}
-.cmp-table{width:100%;border-collapse:collapse;font-size:12px}
-.cmp-table th{text-align:left;padding:.5rem .75rem;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
-.cmp-table td{padding:.6rem .75rem;border-bottom:1px solid rgba(30,42,58,.5);color:var(--text)}
-.cmp-table tr:last-child td{border-bottom:none}
-.cmp-table tr.winner td{background:rgba(62,224,122,.04)}
-.cmp-bar-wrap{width:100px;height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle}
-.cmp-bar{height:100%;border-radius:4px;transition:width .6s ease}
-.cmp-type-badge{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
-.cmp-type-badge.dl{background:rgba(79,195,247,.12);color:#4FC3F7;border:1px solid rgba(79,195,247,.25)}
-.cmp-type-badge.ml{background:rgba(62,224,122,.12);color:#3EE07A;border:1px solid rgba(62,224,122,.25)}
-.cmp-winner-badge{margin-left:6px;padding:1px 6px;border-radius:8px;font-size:9px;background:rgba(62,224,122,.15);color:#3EE07A;border:1px solid rgba(62,224,122,.3)}
 
 
 </style>
@@ -366,11 +352,8 @@ function showPredResult(data){
   el.classList.add('show');
   // Model badge
   const badge = document.getElementById('predModelBadge');
-  const isML = data.model_used === 'ML';
-  const isFallback = data.dl_failed;
-  badge.className = 'pred-model-badge ' + (isML ? (isFallback?'fallback':'ml') : 'dl');
-  badge.textContent = (data.model_icon||'🤖') + ' ' + data.model_name +
-    (isFallback ? ' (DL failed → ML fallback)' : (' — Used: ' + data.model_used)) +
+  badge.className = 'pred-model-badge ml';
+  badge.textContent = (data.model_icon||'🌲') + ' ' + (data.model_name||'Gradient Boosting') +
     ' | Acc: ' + Math.round((data.model_accuracy||0)*100) + '% | F1: ' + Math.round((data.model_f1||0)*1000)/10 + '%';
   // Effectiveness
   const eff = data.effectiveness;
@@ -397,33 +380,9 @@ function showPredResult(data){
     ['HRV Change',m.hrv_change>0?'+'+m.hrv_change:m.hrv_change,'#F4C542'],
     ['Cortisol Change',m.cortisol_change+'%','#FF8C42'],
   ].map(([label,val,col])=>`<div class="pred-metric"><span class="pm-label">${label}</span><span class="pm-val" style="color:${col}">${val}</span></div>`).join('');
-  // Comparison table
-  if(data.comparison) buildComparison(data.comparison, data.model_used_key);
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function buildComparison(cmp, activeKey){
-  const tbody = document.getElementById('cmpBody');
-  const typeColors = {DL:'#4FC3F7', ML:'#3EE07A'};
-  const bestF1 = Math.max(...Object.values(cmp).map(m=>m.f1_score));
-  const rows = Object.entries(cmp).sort((a,b)=>b[1].f1_score-a[1].f1_score).map(([key,m])=>{
-    const isWinner = m.f1_score === bestF1;
-    const isActive = key === activeKey;
-    const barW = Math.round(m.accuracy*100);
-    const col = typeColors[m.type]||'#F4C542';
-    return `<tr class="${isWinner?'winner':''}">
-      <td>${isActive?'▶ ':''}${m.icon} ${m.name}${isWinner?'<span class="cmp-winner-badge">Best</span>':''}</td>
-      <td><span class="cmp-type-badge ${m.type.toLowerCase()}">${m.type}</span></td>
-      <td>
-        <span style="font-size:12px;color:${col};font-weight:500">${Math.round(m.accuracy*1000)/10}%</span>&nbsp;
-        <span class="cmp-bar-wrap"><span class="cmp-bar" style="width:${barW}%;background:${col}"></span></span>
-      </td>
-      <td style="color:${col}">${Math.round(m.f1_score*1000)/10}%</td>
-      <td style="color:var(--muted)">${m.mse}</td>
-    </tr>`;
-  }).join('');
-  tbody.innerHTML = rows;
-}
 
 </script>
 
@@ -480,18 +439,6 @@ function buildComparison(cmp, activeKey){
     </div>
   </div>
 
-  <!-- ── Model Comparison ────────────────────────────────── -->
-  <div class="cmp-section">
-    <h3>⚖️ DL vs ML — Model Accuracy Comparison</h3>
-    <table class="cmp-table" id="cmpTable">
-      <thead><tr>
-        <th>Model</th><th>Type</th><th>Accuracy</th><th>F1 Score</th><th>MSE</th>
-      </tr></thead>
-      <tbody id="cmpBody">
-        <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:1rem">Run a prediction to load comparison data…</td></tr>
-      </tbody>
-    </table>
-  </div>
 
 
 </div>

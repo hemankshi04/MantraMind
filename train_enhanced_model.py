@@ -19,7 +19,6 @@
     model/best_enhanced_model.pkl  ← ready for app.py
     outputs/fig1_accuracy_heatmap.png
     outputs/fig2_grouped_bar.png
-    outputs/fig3_best_model_analysis.png
     outputs/fig4_gan_contribution.png
     outputs/fig5_feature_importance.png
     outputs/fig6_data_distributions.png
@@ -49,8 +48,7 @@ from sklearn.neighbors        import KNeighborsClassifier
 from sklearn.linear_model     import LogisticRegression
 from sklearn.pipeline         import Pipeline
 from sklearn.metrics          import (accuracy_score, classification_report,
-                                       confusion_matrix, f1_score,
-                                       precision_score, recall_score)
+                                       f1_score, precision_score, recall_score)
 
 print("=" * 70)
 print("   MENTAL HEALTH ANALYSIS — ENHANCED MODEL WITH GAN + RESEARCH DATA")
@@ -238,13 +236,22 @@ print(f"  F1 Score      : {best_res['f1']:.4f}")
 
 # ─── SAVE MODEL & ENCODERS ────────────────────────────────────────────────────
 print("\n[7/8] Saving best model artifacts...")
+
+# Fit and save a StandardScaler on the full best dataset (used by app.py for prediction)
+df_best   = datasets[bds]
+X_all     = df_best[FEATURES]
+ml_scaler = StandardScaler()
+ml_scaler.fit(X_all)
+
 joblib.dump(best_res['model'],  os.path.join(MDL, 'best_model.pkl'))
+joblib.dump(ml_scaler,          os.path.join(MDL, 'ml_scaler.pkl'))
 joblib.dump(le_mantra,          os.path.join(MDL, 'le_mantra.pkl'))
 joblib.dump(le_gender,          os.path.join(MDL, 'le_gender.pkl'))
 joblib.dump(le_exp,             os.path.join(MDL, 'le_exp.pkl'))
 joblib.dump(le_target,          os.path.join(MDL, 'le_target.pkl'))
 joblib.dump(FEATURES,           os.path.join(MDL, 'feature_names.pkl'))
-print("  ✓ model/best_model.pkl  (also compatible with app.py)")
+print("  ✓ model/best_model.pkl")
+print("  ✓ model/ml_scaler.pkl   (StandardScaler for app.py predictions)")
 
 # ─── CHARTS ──────────────────────────────────────────────────────────────────
 print("\n[8/8] Generating 7 analysis charts...")
@@ -300,35 +307,6 @@ for sp in ['top','right']: ax.spines[sp].set_visible(False)
 plt.tight_layout()
 plt.savefig(os.path.join(OUT, 'fig2_grouped_bar.png'), dpi=150, bbox_inches='tight')
 plt.close(); print("  ✓ fig2_grouped_bar.png")
-
-# ── Fig 3: Confusion Matrix + Class Report ───────────────────────────────────
-fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-fig.patch.set_facecolor(BG)
-for ax in axes: ax.set_facecolor(BG)
-cm = confusion_matrix(best_y_test, best_y_pred)
-sns.heatmap(cm, annot=True, fmt='d', ax=axes[0], cmap='Blues',
-            xticklabels=le_target.classes_, yticklabels=le_target.classes_,
-            linewidths=0.5, linecolor='white', annot_kws={'size':13, 'weight':'bold'})
-axes[0].set_title(f'Confusion Matrix — {bmod}\n({bds})', fontsize=11, fontweight='bold', color=ACCENT)
-axes[0].set_ylabel('Actual'); axes[0].set_xlabel('Predicted')
-cr      = classification_report(best_y_test, best_y_pred,
-                                 target_names=le_target.classes_, output_dict=True)
-classes = le_target.classes_
-x2      = np.arange(len(classes))
-axes[1].bar(x2-0.25, [cr[c]['precision'] for c in classes], 0.25,
-            label='Precision', color=PALETTE[0], alpha=0.85)
-axes[1].bar(x2,      [cr[c]['recall']    for c in classes], 0.25,
-            label='Recall',    color=PALETTE[1], alpha=0.85)
-axes[1].bar(x2+0.25, [cr[c]['f1-score'] for c in classes], 0.25,
-            label='F1-Score',  color=PALETTE[2], alpha=0.85)
-axes[1].set_xticks(x2); axes[1].set_xticklabels(classes, fontsize=10)
-axes[1].set_ylim(0, 1.15); axes[1].set_ylabel('Score')
-axes[1].set_title('Precision / Recall / F1 by Class', fontsize=11, fontweight='bold', color=ACCENT)
-axes[1].legend(fontsize=9)
-for sp in ['top','right']: axes[1].spines[sp].set_visible(False)
-plt.tight_layout()
-plt.savefig(os.path.join(OUT, 'fig3_best_model_analysis.png'), dpi=150, bbox_inches='tight')
-plt.close(); print("  ✓ fig3_best_model_analysis.png")
 
 # ── Fig 4: GAN Contribution Line Chart ──────────────────────────────────────
 fig, axes = plt.subplots(1, 3, figsize=(15, 5))
@@ -503,7 +481,6 @@ print(classification_report(best_y_test, best_y_pred, target_names=le_target.cla
 print(f"  OUTPUT FILES → outputs/")
 print("  ├─ fig1_accuracy_heatmap.png")
 print("  ├─ fig2_grouped_bar.png")
-print("  ├─ fig3_best_model_analysis.png")
 print("  ├─ fig4_gan_contribution.png")
 print("  ├─ fig5_feature_importance.png")
 print("  ├─ fig6_data_distributions.png")
