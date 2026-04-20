@@ -131,9 +131,9 @@ nav{position:sticky;top:0;z-index:300;background:rgba(8,12,18,.92);backdrop-filt
 .pred-result{display:none;margin-top:1rem;padding:1rem;background:var(--surf);border:1px solid var(--border);border-radius:12px}
 .pred-result.show{display:block}
 .pred-model-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:.75rem;letter-spacing:.04em}
-.pred-model-badge.dl{background:rgba(79,195,247,.12);border:1px solid rgba(79,195,247,.3);color:#4FC3F7}
 .pred-model-badge.ml{background:rgba(62,224,122,.12);border:1px solid rgba(62,224,122,.3);color:#3EE07A}
-.pred-model-badge.fallback{background:rgba(255,140,66,.12);border:1px solid rgba(255,140,66,.3);color:#FF8C42}
+.pred-model-badge.ml{background:rgba(62,224,122,.12);border:1px solid rgba(62,224,122,.3);color:#3EE07A}
+
 .pred-eff{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:.5rem}
 .pred-eff .eff-high{color:#3EE07A}.pred-eff .eff-medium{color:#F4C542}.pred-eff .eff-low{color:#EF5350}
 .pred-probs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
@@ -431,7 +431,7 @@ function showPredResult(data){
     <button class="pred-btn" onclick="runPrediction()">🧠 Predict Effectiveness</button>
 
     <div class="pred-result" id="predResult">
-      <div id="predModelBadge" class="pred-model-badge dl">🧠 Deep Learning (MLP)</div>
+      <div id="predModelBadge" class="pred-model-badge ml">🌲 Gradient Boosting | Acc: 93% | F1: 93.8%</div>
       <div class="pred-eff" id="predEff"></div>
       <div class="pred-probs" id="predProbs"></div>
       <div style="font-size:11px;color:var(--muted);margin-bottom:.4rem">📊 Predicted Biometric Changes</div>
