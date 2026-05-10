@@ -214,13 +214,35 @@ for ds_name, df in datasets.items():
 
 # ─── IDENTIFY BEST ────────────────────────────────────────────────────────────
 print("\n[6/8] Identifying best model...")
+# Strategy: select best model by CV accuracy.
+# Tie-breaking: prefer Voting Ensemble (most generalizable), then All Combined dataset
+# Note: 100% CV on small synthetic datasets can indicate overfitting;
+#       Voting Ensemble on All Combined (800) is the most robust deployment choice.
+PREFERRED_MODEL = 'Voting Ensemble'
+PREFERRED_DS    = 'All Combined (800)'
 best_acc = 0
 bds, bmod = '', ''
 for ds_name, mresults in all_results.items():
     for mname, m in mresults.items():
-        if m['cv_mean'] > best_acc:
-            best_acc = m['cv_mean']
+        cv = m['cv_mean']
+        is_better = cv > best_acc
+        is_tie    = abs(cv - best_acc) < 1e-9
+        # On CV tie: prefer Voting Ensemble over any other model
+        tie_prefer_ensemble = is_tie and mname == PREFERRED_MODEL and bmod != PREFERRED_MODEL
+        # On same-model tie: prefer All Combined dataset (largest, most diverse)
+        tie_prefer_dataset  = (is_tie and mname == bmod == PREFERRED_MODEL
+                               and ds_name == PREFERRED_DS and bds != PREFERRED_DS)
+        if is_better or tie_prefer_ensemble or tie_prefer_dataset:
+            best_acc = cv
             bds, bmod = ds_name, mname
+
+# Safety override: if Voting Ensemble on All Combined exists, prefer it
+# (avoids 100% CV on small synthetic datasets which can reflect overfitting)
+voting_all = all_results.get(PREFERRED_DS, {}).get(PREFERRED_MODEL)
+if voting_all and voting_all['cv_mean'] >= 0.90:
+    bds, bmod = PREFERRED_DS, PREFERRED_MODEL
+    best_acc  = voting_all['cv_mean']
+    print(f"  [Override] Selecting {PREFERRED_MODEL} on {PREFERRED_DS} as most robust deployment model.")
 
 best_res    = all_results[bds][bmod]
 best_y_pred = best_res['y_pred']

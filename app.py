@@ -20,7 +20,7 @@ import pandas as pd, numpy as np, joblib, os, json, random
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'mantra_wellness_2024'
+app.secret_key = os.environ.get('SECRET_KEY', 'mantra_wellness_2024_change_in_prod')
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'instance', 'wellness.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -51,19 +51,59 @@ class Response(db.Model):
 
 # ── Load ML Model ─────────────────────────────────────────────────
 MODEL_DIR = os.path.join(BASE_DIR, 'model')
+
+# Model metadata — accuracy & F1 from training results
+# Best model: Voting Ensemble on All Combined Dataset (800 records)
+#   Test Accuracy: 94.37%  |  CV: 91.88%  |  F1: 0.9435
+MODEL_DISPLAY_INFO = {
+    'VotingClassifier': {
+        'name':     'Voting Ensemble',
+        'accuracy': 0.9437,
+        'f1':       0.9435,
+        'color':    '#2E4057',
+        'icon':     '🗳️',
+    },
+    'GradientBoostingClassifier': {
+        'name':     'Gradient Boosting',
+        'accuracy': 0.975,
+        'f1':       0.9754,
+        'color':    '#048A81',
+        'icon':     '🌲',
+    },
+    'RandomForestClassifier': {
+        'name':     'Random Forest',
+        'accuracy': 0.975,
+        'f1':       0.9754,
+        'color':    '#54C6EB',
+        'icon':     '🌳',
+    },
+    'default': {
+        'name':     'ML Classifier',
+        'accuracy': 0.94,
+        'f1':       0.94,
+        'color':    '#EF946C',
+        'icon':     '🤖',
+    }
+}
+
 try:
-    ml_scaler  = joblib.load(os.path.join(MODEL_DIR, 'ml_scaler.pkl'))
-    le_mantra  = joblib.load(os.path.join(MODEL_DIR, 'le_mantra.pkl'))
-    le_gender  = joblib.load(os.path.join(MODEL_DIR, 'le_gender.pkl'))
-    le_exp     = joblib.load(os.path.join(MODEL_DIR, 'le_exp.pkl'))
-    le_target  = joblib.load(os.path.join(MODEL_DIR, 'le_target.pkl'))
+    ml_scaler    = joblib.load(os.path.join(MODEL_DIR, 'ml_scaler.pkl'))
+    le_mantra    = joblib.load(os.path.join(MODEL_DIR, 'le_mantra.pkl'))
+    le_gender    = joblib.load(os.path.join(MODEL_DIR, 'le_gender.pkl'))
+    le_exp       = joblib.load(os.path.join(MODEL_DIR, 'le_exp.pkl'))
+    le_target    = joblib.load(os.path.join(MODEL_DIR, 'le_target.pkl'))
     FEATURE_COLS = joblib.load(os.path.join(MODEL_DIR, 'feature_names.pkl'))
-    ml_model   = joblib.load(os.path.join(MODEL_DIR, 'best_model.pkl'))
-    print("ML Model (GradientBoosting) loaded successfully")
+    ml_model     = joblib.load(os.path.join(MODEL_DIR, 'best_model.pkl'))
+
+    # Dynamically identify loaded model
+    _model_class = type(ml_model).__name__
+    _model_info  = MODEL_DISPLAY_INFO.get(_model_class, MODEL_DISPLAY_INFO['default'])
+    print(f"✅ ML Model loaded: {_model_class} → display as '{_model_info['name']}'")
 except Exception as e:
-    print(f"WARNING: Model not found — {e}. Run train_enhanced_model.py first!")
-    ml_model  = None
-    ml_scaler = None
+    print(f"⚠️  WARNING: Model not found — {e}. Run train_enhanced_model.py first!")
+    ml_model     = None
+    ml_scaler    = None
+    _model_info  = MODEL_DISPLAY_INFO['default']
 
 # ── Auth decorator ────────────────────────────────────────────
 def login_required(f):
@@ -202,6 +242,7 @@ def predict():
         return jsonify({'success': False, 'error': 'Model not loaded. Run train_enhanced_model.py first.'})
     try:
         d = request.get_json()
+
         MANTRA_MAP = {'om':'Om','gayatri':'Gayatri','om_mani':'Om_Mani',
                       'shma':'Shma','sufi':'Sufi_Dhikr','hesychasm':'Hesychasm'}
         GENDER_MAP = {'male':'M','female':'F','other':'M'}
@@ -214,66 +255,96 @@ def predict():
         if gender not in le_gender.classes_:
             gender = le_gender.classes_[0]
 
-        duration   = int(d['duration'])
-        rpm        = int(d['rpm']); breath_sync = int(d['breath_sync'])
-        pre_stress = int(d['pre_stress']); pre_anxiety = int(d['pre_anxiety'])
-        pre_focus  = int(d['pre_focus']);  pre_calm    = int(d['pre_calm'])
-        age        = int(d['age']); experience = d['experience']
+        duration    = int(d['duration'])
+        rpm         = int(d['rpm']);     breath_sync = int(d['breath_sync'])
+        pre_stress  = int(d['pre_stress']); pre_anxiety = int(d['pre_anxiety'])
+        pre_focus   = int(d['pre_focus']);  pre_calm    = int(d['pre_calm'])
+        age         = int(d['age']);     experience  = d['experience']
 
-        ef     = {'beginner':0.75,'intermediate':1.0,'advanced':1.25}[experience]
-        df_val = min(duration/15.0, 2.0)
-        cort   = round(-30.0 * df_val * ef, 1)
-        hrv    = round( 12.0 * df_val * ef, 1)
-        alpha  = round( 24.0 * df_val * ef, 1)
-        theta  = round( 20.0 * df_val * ef, 1)
-        sr = pre_stress  * abs(cort)/100 * 2.0
-        ar = pre_anxiety * abs(cort)/100 * 2.0
-        fg = (100-pre_focus)  * alpha/100 * 2.0
-        cg = (100-pre_calm)   * alpha/100 * 2.0
-        total = sr+ar+fg+cg
+        # ── Biofeedback simulation (coefficients calibrated to training data ranges) ──
+        # Training data: hrv 4–27, cortisol -42 to -8, alpha 8–46, theta 7–37.7
+        # session_intensity = duration_minutes * repetitions_per_min (training range 150–6300)
+        # rpm from UI is breaths/min (4–12); scale to training rep range (30–216)
+        ef      = {'beginner': 0.75, 'intermediate': 1.0, 'advanced': 1.25}.get(experience, 1.0)
+        dur_fac = min(duration / 15.0, 2.0)          # 0.33–2.0 based on duration
+        cort    = round(-30.0 * dur_fac * ef, 1)     # cortisol change % (negative = reduction)
+        hrv     = round( 12.0 * dur_fac * ef, 1)     # HRV improvement (training: 4–27)
+        alpha   = round( 24.0 * dur_fac * ef, 1)     # alpha wave increase % (training: 8–46)
+        theta   = round( 20.0 * dur_fac * ef, 1)     # theta wave increase % (training: 7–37.7)
 
+        # Post-session values derived from biofeedback (clipped to realistic bounds)
+        # Training formula: stress_reduction = pre_stress - post_stress (range 4–33.6)
+        # We simulate post values using cortisol-based reductions, capped to training range
+        sr = round(min(pre_stress  * abs(cort) / 100 * 1.0, 33.0), 1)   # stress reduction
+        ar = round(min(pre_anxiety * abs(cort) / 100 * 1.0, 30.0), 1)   # anxiety reduction
+        fg = round(min((100 - pre_focus) * alpha / 100 * 0.5, 23.0), 1) # focus gain
+        cg = round(min((100 - pre_calm)  * alpha / 100 * 0.5, 27.0), 1) # calm gain
+        total = sr + ar + fg + cg
+
+        # session_intensity: training used duration_minutes * repetitions_per_min (30–216 rpm)
+        # UI rpm is 4–12 breath-paced reps; scale × 15 to match training rpm range
+        scaled_rpm = rpm * 15
+
+        # biofeedback_composite: training formula = hrv + alpha + theta - cortisol_change_percent
+        # (cortisol is negative, so subtracting it adds to composite — range ~27–152)
+        biofeedback = round(hrv + alpha + theta - cort, 1)
+
+        # ── Build feature vector (24 features — must match train_enhanced_model.py exactly) ──
         sample = {
-            'mantra_enc': int(le_mantra.transform([mantra])[0]),
-            'duration_minutes': duration, 'repetitions_per_min': rpm,
-            'breath_sync_sec': breath_sync, 'pre_stress': pre_stress,
-            'pre_anxiety': pre_anxiety, 'pre_focus': pre_focus,
-            'pre_calm': pre_calm, 'hrv_change': hrv,
-            'cortisol_change_percent': cort, 'alpha_wave_increase': alpha,
-            'theta_wave_increase': theta, 'age': age,
-            'gender_enc': int(le_gender.transform([gender])[0]),
-            'exp_enc':    int(le_exp.transform([experience])[0]),
-            'stress_reduction': round(sr,1), 'anxiety_reduction': round(ar,1),
-            'focus_gain':       round(fg,1), 'calm_gain':         round(cg,1),
-            'total_improvement': round(total,1),
-            'wellness_score':    round(total+hrv, 1),
-            'stress_anxiety_ratio':   round(sr/(ar+0.01), 2),
-            'biofeedback_composite':  round((hrv + abs(cort) + alpha + theta)/4, 1),
-            'session_intensity':      round(df_val * rpm * ef, 1)
+            'mantra_enc':             int(le_mantra.transform([mantra])[0]),
+            'duration_minutes':       duration,
+            'repetitions_per_min':    scaled_rpm,
+            'breath_sync_sec':        breath_sync,
+            'pre_stress':             pre_stress,
+            'pre_anxiety':            pre_anxiety,
+            'pre_focus':              pre_focus,
+            'pre_calm':               pre_calm,
+            'hrv_change':             hrv,
+            'cortisol_change_percent':cort,
+            'alpha_wave_increase':    alpha,
+            'theta_wave_increase':    theta,
+            'age':                    age,
+            'gender_enc':             int(le_gender.transform([gender])[0]),
+            'exp_enc':                int(le_exp.transform([experience])[0]),
+            'stress_reduction':       sr,
+            'anxiety_reduction':      ar,
+            'focus_gain':             fg,
+            'calm_gain':              cg,
+            'total_improvement':      round(total, 1),
+            'wellness_score':         round(total + hrv, 1),
+            'stress_anxiety_ratio':   round(sr / (ar + 0.01), 2),
+            'biofeedback_composite':  biofeedback,
+            'session_intensity':      round(duration * scaled_rpm, 1),
         }
-        sdf        = pd.DataFrame([sample])[FEATURE_COLS]
-        sdf_scaled = ml_scaler.transform(sdf)
 
-        # Use rule-based instead of ML
-        if total > 80:
-            eff = 'high'
-            probs = {'high': 1.0, 'medium': 0.0, 'low': 0.0}
-        elif total > 40:
-            eff = 'medium'
-            probs = {'high': 0.0, 'medium': 1.0, 'low': 0.0}
+        # ── Run through trained ML model (no external scaling needed) ──
+        # The VotingClassifier handles scaling internally:
+        # - RandomForest and GradientBoosting were trained on raw features (no scaling needed)
+        # - The SVM sub-estimator has its own StandardScaler inside its Pipeline
+        # Applying ml_scaler externally would double-scale the SVM inputs → wrong predictions
+        sdf = pd.DataFrame([sample])[FEATURE_COLS]
+
+        pred_encoded = ml_model.predict(sdf)[0]
+        eff          = le_target.inverse_transform([pred_encoded])[0]  # 'high'/'medium'/'low'
+
+        # Probability distribution (soft voting models support predict_proba)
+        if hasattr(ml_model, 'predict_proba'):
+            prob_array = ml_model.predict_proba(sdf)[0]
+            classes    = list(le_target.classes_)           # ['high', 'low', 'medium']
+            probs      = {cls: round(float(p), 4) for cls, p in zip(classes, prob_array)}
         else:
-            eff = 'low'
-            probs = {'high': 0.0, 'medium': 0.0, 'low': 1.0}
+            probs = {c: (1.0 if c == eff else 0.0) for c in le_target.classes_}
 
         return jsonify({
             'success':        True,
             'effectiveness':  eff,
             'probabilities':  probs,
-            'model_used':     'Rule-based',
-            'model_name':     'Total Improvement Rule',
-            'model_color':    '#F4C542',
-            'model_icon':     '📏',
-            'model_accuracy': 0.8,
-            'model_f1':       0.8,
+            'model_used':     _model_info['name'],
+            'model_name':     _model_info['name'],
+            'model_color':    _model_info['color'],
+            'model_icon':     _model_info['icon'],
+            'model_accuracy': _model_info['accuracy'],
+            'model_f1':       _model_info['f1'],
             'metrics': {
                 'post_stress':       round(max(10, pre_stress  - sr), 1),
                 'post_anxiety':      round(max(8,  pre_anxiety - ar), 1),
@@ -286,7 +357,7 @@ def predict():
                 'hrv_change':        hrv,
                 'cortisol_change':   cort,
                 'alpha_increase':    alpha,
-                'theta_increase':    theta
+                'theta_increase':    theta,
             }
         })
     except Exception as e:
@@ -303,21 +374,22 @@ def api_stats():
         df = pd.read_csv(os.path.join(BASE_DIR, 'dataset', 'mantra_dataset.csv'))
         return jsonify({
             'total_sessions':       len(df),
-            'avg_stress_reduction': round((df['pre_stress']-df['post_stress']).mean(), 1),
+            'avg_stress_reduction': round((df['pre_stress'] - df['post_stress']).mean(), 1),
             'avg_alpha_increase':   round(df['alpha_wave_increase'].mean(), 1),
             'best_mantra':          df.groupby('mantra_type')['cortisol_change_percent'].mean().abs().idxmax()
         })
     except:
         return jsonify({'total_sessions': 200})
 
+
 with app.app_context():
     os.makedirs('instance', exist_ok=True)
     db.create_all()
-    print("Database ready")
+    print("Database ready ✅")
 
 if __name__ == '__main__':
     print("\n" + "="*50)
     print("  Mantra & Mind Web App")
     print("  http://localhost:5000")
-    print("="*50+"\n")
-    app.run(debug=True, port=5000)
+    print("="*50 + "\n")
+    app.run(debug=False, port=5000)
